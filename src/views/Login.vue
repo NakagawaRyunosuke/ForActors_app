@@ -26,7 +26,7 @@
                     <v-btn
                         color="teal lighten-3"
                         width="50%"
-                        class="mb-5 mt-5"
+                        class="mb-8 mt-5"
                         to="/addAccount"
                     >メールで新規登録</v-btn>
             </v-card-text>
@@ -37,37 +37,26 @@
 </template>
 
 <script>
-import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 export default {
-    mounted(){
-        const firebaseConfig = {
-        apiKey: process.env.VUE_APP_APIKEY,
-        authDomain: process.env.VUE_APP_AUTHDOMAIN,
-        projectId: process.env.VUE_APP_PROJECTID,
-        storageBucket: process.env.VUE_APP_STORAGEBUCKET,
-        messagingSenderId: process.env.VUE_APP_MESSAGINGSENDERID,
-        appId: process.env.VUE_APP_APPID
-        };
-        initializeApp(firebaseConfig);
-    },
     methods:{
         googleAuth(){
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
-            console.log("ok")
             signInWithPopup(auth,provider)
             .then((result)=>{
-                console.log(result);
-                this.$router.push("/home");
+                this.$store.state.uid = result.user.uid;
+                sessionStorage.setItem('user', this.$store.state.uid);
+                this.$router.push("/");
             })
             .catch((error)=>{
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode+" err: "+errorMessage);
+                alert(errorCode+" err: "+errorMessage);
             })
         },
+        
     }
 }
 </script>
@@ -79,5 +68,4 @@ export default {
     margin-top: 2px;
     background-color: rgba(216, 245, 216, 0.753);
 }
-
 </style>

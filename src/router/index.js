@@ -4,6 +4,9 @@ import Home from '../views/Home.vue'
 import Login from "../views/Login.vue"
 import AddAccount from "../views//AddAccount.vue"
 import EmailForm from "../views/EmailForm.vue"
+import Search from "../views/Search.vue"
+import Profile from "../views/Profile.vue"
+import Message from "../views/Message.vue"
 
 Vue.use(VueRouter)
 
@@ -27,6 +30,21 @@ const routes = [
     path: "/emailForm",
     name: "EmailForm",
     component: EmailForm
+  },
+  {
+    path: "/search",
+    name: "Search",
+    component: Search
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile
+  },
+  {
+    path: "/message",
+    name: "Message",
+    component: Message
   }
 
 ]

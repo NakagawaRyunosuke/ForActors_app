@@ -18,7 +18,7 @@
                 </div>
                 <v-btn
                     class="mb-6 mt-6"
-                    width="20%"
+                    width="30%"
                     color="deep-orange lighten-3"
                     @click="login"
                 >ログイン</v-btn>
@@ -51,15 +51,18 @@ export default {
             signInWithEmailAndPassword(auth, this.email, this.password)
             .then((userCredential)=>{
                 const user = userCredential.user;
-                console.log(user);
+                this.$store.state.uid = user.uid;
+                sessionStorage.setItem('user', this.$store.state.uid);
+                this.$router.push("/");
             })
             .catch((error)=>{
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log(errorCode+":"+errorMessage);
+                alert(errorCode+":"+errorMessage);
             });
         }
-    }
+    },
+
 }
 </script>
 

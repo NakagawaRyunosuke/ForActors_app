@@ -9,7 +9,11 @@
         flat
         hide-on-scroll
       >
-        <h3>~ For actors ~</h3>
+        <h3>For Actors</h3>
+        <v-btn
+          text
+          class="logout"
+        >ログアウト<v-icon>mdi-logout</v-icon></v-btn>       
       </v-app-bar>
     </v-card>
 
@@ -30,12 +34,13 @@
         <v-card-text>
           <v-btn
             v-for="icon in icons"
-            :key="icon"
-            class="mx-10"
+            :key="icon.key"
+            class="mx-5"
             icon
+            :to="icon.to"
           >
-            <v-icon size="35px">
-              {{ icon }}
+            <v-icon size="auto">
+              {{ icon.name }}
             </v-icon>
           </v-btn>
         </v-card-text>
@@ -44,18 +49,25 @@
   </v-app>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
+
 export default Vue.extend({
   data(){
     return{
       icons:[
-        "mdi-home",
-        "mdi-magnify",
-        "mdi-account",
-        "mdi-email",
+        {name:"mdi-home",to:"/",key:"1"},
+        {name:"mdi-magnify",to:"/search",key:"2"},
+        {name:"mdi-account",to:"/profile",key:"3"},
+        {name:"mdi-email",to:"/message",key:"4"},
       ],
     }
-  }
+  },
 })
 </script>
+
+<style scoped>
+.logout{
+  margin-left:49%;
+}
+</style>
