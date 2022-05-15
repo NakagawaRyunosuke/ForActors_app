@@ -13,6 +13,8 @@
         <v-btn
           text
           class="logout"
+          v-if="loginFlag"
+          @click="logout"
         >ログアウト<v-icon>mdi-logout</v-icon></v-btn>       
       </v-app-bar>
     </v-card>
@@ -31,7 +33,7 @@
         class="text-center"
         elevation="20"
       >
-        <v-card-text>
+        <v-card-text v-if="loginFlag">
           <v-btn
             v-for="icon in icons"
             :key="icon.key"
@@ -61,13 +63,30 @@ export default Vue.extend({
         {name:"mdi-account",to:"/profile",key:"3"},
         {name:"mdi-email",to:"/message",key:"4"},
       ],
+
     }
   },
+  methods:{
+    logout(){
+      sessionStorage.removeItem("user");
+      this.$router.push("/login")
+      this.$router.go({path: this.$router.currentRoute.path, force: true});
+    }
+  },
+  computed:{
+    loginFlag(){
+      const uid = sessionStorage.getItem("user");
+      if(uid){
+        return true;
+      }
+      return false;
+    }
+  }
 })
 </script>
 
 <style scoped>
 .logout{
-  margin-left:49%;
+  margin-left:35%;
 }
 </style>

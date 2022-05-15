@@ -54,6 +54,7 @@ export default {
                 this.$store.state.uid = user.uid;
                 sessionStorage.setItem('user', this.$store.state.uid);
                 this.$router.push("/");
+                this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((error)=>{
                 const errorCode = error.code;
