@@ -38,6 +38,8 @@
 
 <script>
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import db from "../plugins/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default {
     methods:{
@@ -48,8 +50,9 @@ export default {
             .then((result)=>{
                 this.$store.state.uid = result.user.uid;
                 sessionStorage.setItem('user', this.$store.state.uid);
+                this.checkData();
                 this.$router.push("/");
-                this.$router.go({path: this.$router.currentRoute.path, force: true});
+                //this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((error)=>{
                 const errorCode = error.code;
@@ -57,8 +60,22 @@ export default {
                 alert(errorCode+" err: "+errorMessage);
             })
         },
-        
-    }
+        async checkData(){
+            const docRef = doc(db, "users", sessionStorage.getItem("user"));
+            const data = await getDoc(docRef);
+            if(!data.data()){
+                await setDoc(docRef,{
+                    uid: sessionStorage.getItem("user"),
+                    name:"",
+                    src:"",
+                    PRText:""
+                });
+            }
+        }
+    },
+    
+
+
 }
 </script>
 

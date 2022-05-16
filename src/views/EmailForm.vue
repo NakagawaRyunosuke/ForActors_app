@@ -29,6 +29,9 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import db from "../plugins/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+
 export default {
     data(){
         return{
@@ -53,14 +56,27 @@ export default {
                 const user = userCredential.user;
                 this.$store.state.uid = user.uid;
                 sessionStorage.setItem('user', this.$store.state.uid);
+                this.checkData();
                 this.$router.push("/");
-                this.$router.go({path: this.$router.currentRoute.path, force: true});
+                //this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((error)=>{
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 alert(errorCode+":"+errorMessage);
             });
+        },
+        async checkData(){
+            const docRef = doc(db, "users", sessionStorage.getItem("user"));
+            const data = await getDoc(docRef);
+            if(!data.data()){
+                await setDoc(docRef,{
+                    uid: sessionStorage.getItem("user"),
+                    name:"",
+                    src:"",
+                    PRText:""
+                });
+            }
         }
     },
 
