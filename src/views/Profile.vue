@@ -19,8 +19,8 @@
                                 hide-input
                                 prepend-icon="mdi-image-edit"
                                 class="inputIcon"
-                                @change="editImg"
                                 v-model="image"
+                                @change="editImg"
                                 accept="image/*"
                             ></v-file-input>
                         </div>
@@ -44,7 +44,7 @@
                         </v-col>
                     </v-row>
                     <div class="editBtn">
-                        <v-btn @click="editProfile" text :loading="loadFlag"><h4>{{ btnText }}</h4></v-btn>
+                        <v-btn @click="editProfile" :loading="loadFlag" color="white"><h4>{{ btnText }}</h4></v-btn>
                     </div>
                 </v-card>
             </v-col>
@@ -75,8 +75,8 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 export default {
     data(){
         return{
-            image:null,
             src:null,
+            image:null,
             name:"test太郎",
             PRText:"test",
             follow:0,
@@ -116,7 +116,18 @@ export default {
             });
         },
         editImg(){
-            this.src = URL.createObjectURL(this.image);
+            const reader = new FileReader();
+            const file = this.image;
+            console.log(file)
+            if(file){
+                reader.readAsDataURL(file);
+            }else{
+                this.src = '';
+            }
+            reader.onload = () => {
+                this.src = reader.result;
+            }
+            
         }
     },
     //マウント時、プロフィールデータを取得、表示
