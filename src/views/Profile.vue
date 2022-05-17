@@ -44,7 +44,7 @@
                         </v-col>
                     </v-row>
                     <div class="editBtn">
-                        <v-btn @click="editProfile" text><h4>{{ btnText }}</h4></v-btn>
+                        <v-btn @click="editProfile" text :loading="loadFlag"><h4>{{ btnText }}</h4></v-btn>
                     </div>
                 </v-card>
             </v-col>
@@ -69,6 +69,9 @@
 </template>
 
 <script>
+import db from "../plugins/firebase";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+
 export default {
     data(){
         return{
@@ -76,14 +79,15 @@ export default {
             src:null,
             name:"test太郎",
             PRText:"test",
-            follow:"100",
-            follower:"100",
+            follow:0,
+            follower:0,
             btnText:"プロフィール編集",
             editFlag:false,
             fieldRules:[
                 value => !!value || "名前を空にすることはできません",
                 value => value.length < 15 || "14文字以内で入力してください",
             ],
+            loadFlag:false,
         }
     },
     methods:{
@@ -94,15 +98,36 @@ export default {
             }else{
                 if(this.name.length > 0 && this.name.length < 15){
                     this.editFlag = false;
+                    this.update();
+                    this.loadFlag = false;
                     this.btnText = "プロフィール編集";
                 }
 
             }
             
         },
+        async update(){
+            this.loadFlag = true;
+            const docRef = doc(db, "users", sessionStorage.getItem("user"));
+            await updateDoc(docRef,{
+                name:this.name,
+                src:this.src,
+                PRText:this.PRText,
+            });
+        },
         editImg(){
             this.src = URL.createObjectURL(this.image);
         }
+    },
+    //マウント時、プロフィールデータを取得、表示
+    async mounted(){
+        const docRef = doc(db, "users", sessionStorage.getItem("user"));
+        const data = await getDoc(docRef);
+        this.name = data.data().name;
+        this.src = data.data().src;
+        this.PRText = data.data().PRText;
+        this.follow = data.data().follow;
+        this.follower = data.data().follower;
     }
 }
 </script>

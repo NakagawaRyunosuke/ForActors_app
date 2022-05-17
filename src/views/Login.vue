@@ -52,7 +52,7 @@ export default {
                 sessionStorage.setItem('user', this.$store.state.uid);
                 this.checkData();
                 this.$router.push("/");
-                //this.$router.go({path: this.$router.currentRoute.path, force: true});
+                this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((error)=>{
                 const errorCode = error.code;
@@ -66,9 +66,11 @@ export default {
             if(!data.data()){
                 await setDoc(docRef,{
                     uid: sessionStorage.getItem("user"),
-                    name:"",
+                    name:"名無し",
                     src:"",
-                    PRText:""
+                    PRText:"",
+                    follow:0,
+                    follower:0
                 });
             }
         }
