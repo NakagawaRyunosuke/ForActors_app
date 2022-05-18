@@ -7,7 +7,6 @@
       <v-app-bar
         elevation="6"
         flat
-        hide-on-scroll
       >
         <h3>For Actors</h3>
         <v-btn

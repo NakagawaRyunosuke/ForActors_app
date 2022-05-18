@@ -65,6 +65,19 @@
             ></v-textarea>
         </div>
 
+        <div class="auditionBoad">
+        <v-card
+            elevatuon="2"
+            v-for="item in items"
+            :key="item.id"
+            class="mb-2"
+        >
+            <v-card-title><a :herf="item.url">{{ item.title }}</a></v-card-title>
+            <v-card-subtitle>ひとことコメント：</v-card-subtitle>
+            <v-card-text>{{ item.text }}</v-card-text>
+        </v-card>
+        </div>
+
     </v-container>
 </template>
 
@@ -88,6 +101,13 @@ export default {
                 value => value.length < 15 || "14文字以内で入力してください",
             ],
             loadFlag:false,
+            items:[
+                {id:1,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
+                {id:2,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
+                {id:3,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
+                {id:4,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
+                {id:5,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
+            ]
         }
     },
     methods:{
@@ -131,7 +151,7 @@ export default {
         }
     },
     //マウント時、プロフィールデータを取得、表示
-    async mounted(){
+    async created(){
         const docRef = doc(db, "users", sessionStorage.getItem("user"));
         const data = await getDoc(docRef);
         this.name = data.data().name;
@@ -145,10 +165,11 @@ export default {
 
 <style scoped>
 .container{
-    height: 100%;
+    height: 720px;
     width: 100%;
     margin-top: 2px;
     background-color: rgba(216, 245, 216, 0.753);
+    overflow: auto;
 }
 img{
     width: 150px;
@@ -172,5 +193,8 @@ img{
     margin: auto;
     padding: 0;
     border-radius: 100%;
+}
+picture img{
+    background-color: rgba(128, 128, 128, 0.514);
 }
 </style>
