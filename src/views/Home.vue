@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div>
-      <h3>みんなのオーディション情報</h3>
+      <h3 class="text">みんなのオーディション情報</h3>
     </div>
     <div class="auditionBoad">
       <v-card
@@ -10,43 +10,56 @@
         :key="item.id"
         class="mb-2"
       >
-        <v-card-title><a :herf="item.url">{{ item.title }}</a></v-card-title>
-        <v-card-subtitle>ひとことコメント：</v-card-subtitle>
+        <div class="d-flex" height=40>
+          <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+        </div>
+
+        <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
         <v-card-text>{{ item.text }}</v-card-text>
       </v-card>
     </div>
-
+    
     <PostBtn/>
+    <PostForm v-show="this.$store.state.postFlag" />
   </v-container>
 </template>
 
 <script>
 import PostBtn from "../components/PostBtn.vue";
+import PostForm from "../components/PostForm.vue";
+import db from "../plugins/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 export default {
   components:{
     PostBtn,
+    PostForm
   },
-  mounted(){
+  async mounted(){
     const user =sessionStorage.getItem('user');
     if(!user){
       this.$router.push("/login");
     }
+
+    const collectionRef = collection(db, "audition");
+    const datas = await getDocs(collectionRef);
+    datas.forEach((data)=>{
+      this.items.push(data.data());
+    });
   },
   data(){
     return{
-      items:[
-        {id:1,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:2,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:3,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:4,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:5,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:6,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:7,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:8,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:9,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-        {id:10,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-      ]
+      items:[],
+      color:""
+    }
+  },
+  methods:{
+    clickStar(){
+      if(this.color === "yellow"){
+        this.color = "";
+      }else{
+        this.color = "yellow";
+      }
     }
   }
 }
@@ -57,11 +70,16 @@ export default {
     height: 100%;
     width: 100%;
     margin-top: 2px;
-    background-color: rgba(252, 184, 184, 0.753);
 }
 .auditionBoad{
   height: 665px;
   overflow: auto;
+}
+.text{
+  border-bottom: 1px solid black;
+}
+.title{
+  width: 50%;
 }
 </style>
 

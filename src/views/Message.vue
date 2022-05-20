@@ -1,3 +1,3 @@
 <template>
-    <h1>MessagePage</h1>
+    <h2>hello</h2>
 </template>

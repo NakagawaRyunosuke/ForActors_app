@@ -1,10 +1,22 @@
-<template>
+<template>       
     <div class="postBtn">
-        <v-btn class="rounded-circle" width=80 height=80 color="rgb(252, 184, 184)">
-            <v-icon large>mdi-note-plus-outline</v-icon>
+        <v-btn class="rounded-circle" width=80 height=80 color="black" @click="clickPostBtn">
+            <v-icon large color="white">mdi-note-plus-outline</v-icon>
         </v-btn>
     </div>
 </template>
+
+<script>
+export default {
+    methods:{
+        clickPostBtn(){
+            if(!this.$store.state.postFlag){
+                this.$store.state.postFlag = true;
+            }
+        }
+    }
+}
+</script>
 
 <style scoped>
 .postBtn{

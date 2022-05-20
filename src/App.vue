@@ -7,13 +7,15 @@
       <v-app-bar
         elevation="6"
         flat
+        color="black"
       >
-        <h3>For Actors</h3>
+        <h3 class="title">For Actors</h3>
         <v-btn
           text
           class="logout"
           v-if="loginFlag"
           @click="logout"
+          color="white"
         >ログアウト<v-icon>mdi-logout</v-icon></v-btn>       
       </v-app-bar>
     </v-card>
@@ -31,6 +33,7 @@
         width="100%"
         class="text-center"
         elevation="20"
+        color="black"
       >
         <v-card-text v-if="loginFlag">
           <v-btn
@@ -40,7 +43,7 @@
             icon
             :to="icon.to"
           >
-            <v-icon size="auto">
+            <v-icon size="auto" color="white">
               {{ icon.name }}
             </v-icon>
           </v-btn>
@@ -87,5 +90,8 @@ export default Vue.extend({
 <style scoped>
 .logout{
   margin-left:35%;
+}
+.title{
+  color: white;
 }
 </style>

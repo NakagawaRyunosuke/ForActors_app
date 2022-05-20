@@ -9,14 +9,14 @@
                 <v-divider></v-divider>
                 <div class="mx-auto mt-8">
                     <v-btn
-                        color="light-green accent-1"
+                        color="white"
                         width="50%"
                         class="mb-4 mt-5"
                         @click="googleAuth"
                     >Google</v-btn>
                     <p></p>
                     <v-btn
-                        color="deep-orange lighten-3"
+                        color="white"
                         width="50%"
                         class="mb-4"
                         to="/emailForm"
@@ -24,7 +24,7 @@
                 </div>
                 <h2>or</h2>
                     <v-btn
-                        color="teal lighten-3"
+                        color="white"
                         width="50%"
                         class="mb-8 mt-5"
                         to="/addAccount"
@@ -86,6 +86,5 @@ export default {
     height: 100%;
     width: 100%;
     margin-top: 2px;
-    background-color: rgba(216, 245, 216, 0.753);
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
     <v-container class="text-left">
-        <h2 class="ml-6" v-show="!editFlag">{{name}}</h2>
+        <h2 class="text-center" v-show="!editFlag">{{name}}</h2>
         <v-text-field v-model="name" v-show="editFlag" :rules="fieldRules"></v-text-field>
-        <v-row no-gutters>
-            <v-col>
+        <div>
+            <div>
                 <v-card
                     class="pa-2 transparent"
                     outlined
                     tile
                 >
-                    <div>
+                    <div class="text-center">
                         <picture>
                             <source :srcset="src">
                             <img src="../assets/default.png" alt="default">
@@ -26,14 +26,14 @@
                         </div>
                     </div>
                 </v-card>
-            </v-col>
-            <v-col>
+            </div>
+            <div>
                 <v-card
                     class="pa-2 transparent mt-4"
                     outlined
                     tile
                 >
-                    <v-row no-gutters>
+                    <v-row no-gutters v-show="!editFlag">
                         <v-col class="text-center">
                             <h4>フォロー</h4>
                             <p>{{ follow }}</p>
@@ -47,10 +47,10 @@
                         <v-btn @click="editProfile" :loading="loadFlag" color="white"><h4>{{ btnText }}</h4></v-btn>
                     </div>
                 </v-card>
-            </v-col>
-        </v-row>
+            </div>
+        </div>
 
-        <div class="mt-8">
+        <div class="mt-12">
             <v-textarea
                 ref="input"
                 color="teal"
@@ -60,22 +60,27 @@
                 :readonly="!editFlag"
                 auto-complete
                 v-model="PRText"
-                length=300
                 rows=1
             ></v-textarea>
         </div>
 
-        <div class="auditionBoad">
-        <v-card
-            elevatuon="2"
-            v-for="item in items"
-            :key="item.id"
-            class="mb-2"
-        >
-            <v-card-title><a :herf="item.url">{{ item.title }}</a></v-card-title>
-            <v-card-subtitle>ひとことコメント：</v-card-subtitle>
-            <v-card-text>{{ item.text }}</v-card-text>
-        </v-card>
+        <div class="mt-8" v-show="!editFlag">
+            <div class="d-flex tab">
+                <h3 :class="postFlag" @click="movePostTab">投稿</h3>
+                <h3 id="star" :class="starFlag" @click="moveStarTab">お気に入り</h3>
+            </div>
+            <v-card
+                elevatuon="2"
+                v-for="item in items"
+                :key="item.id"
+                class="mb-2"
+            >
+                <div class="cardTitle">
+                    <v-card-title class="titleItem"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                    <h4 class="titleItem text-right mr-5 my-auto">X</h4>
+                </div>
+                <v-card-text>{{ item.text }}</v-card-text>
+            </v-card>
         </div>
 
     </v-container>
@@ -102,12 +107,14 @@ export default {
             ],
             loadFlag:false,
             items:[
-                {id:1,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-                {id:2,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-                {id:3,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-                {id:4,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-                {id:5,title:"title",url:"https://google.com",text:"やる気のあるやつ、大募集！"},
-            ]
+                {id:1,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
+                {id:2,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
+                {id:3,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
+                {id:4,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
+                {id:5,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
+            ],
+            postFlag:"isSelect",
+            starFlag:"",
         }
     },
     methods:{
@@ -148,9 +155,17 @@ export default {
                 this.src = reader.result;
             }
             
+        },
+        movePostTab(){
+            this.postFlag = "isSelect";
+            this.starFlag = "";
+        },
+        moveStarTab(){
+            this.starFlag = "isSelect";
+            this.postFlag = "";
         }
     },
-    //マウント時、プロフィールデータを取得、表示
+    //クリエイト時、プロフィールデータを取得、表示
     async created(){
         const docRef = doc(db, "users", sessionStorage.getItem("user"));
         const data = await getDoc(docRef);
@@ -168,15 +183,9 @@ export default {
     height: 720px;
     width: 100%;
     margin-top: 2px;
-    background-color: rgba(216, 245, 216, 0.753);
     overflow: auto;
 }
-img{
-    width: 150px;
-    height: 150px;
-    border-radius: 100%;
-    border: 2px solid rgba(146, 142, 142, 0.729);
-}
+
 .editBtn{
     text-align: center;
     margin-top: 20px;
@@ -184,7 +193,7 @@ img{
 .imgInput{
     position: absolute;
     top: 45%;
-    left: 40%;
+    left: 47%;
 }
 .inputIcon{
     background-color: rgba(240, 248, 255, 0.748);
@@ -196,5 +205,25 @@ img{
 }
 picture img{
     background-color: rgba(128, 128, 128, 0.514);
+    width: 150px;
+    height: 150px;
+    border-radius: 100%;
+    border: 2px solid rgba(146, 142, 142, 0.729);
+}
+.cardTitle{
+    display: flex;
+    margin: auto;
+}
+.titleItem{
+    width: 50%;
+    font-size: 25px;
+}
+.tab h3{
+    width: 50%;
+    text-align: center;
+    border-bottom: 2px solid black;
+}
+.isSelect{
+    background-color: rgba(0, 0, 0, 0.248);
 }
 </style>
