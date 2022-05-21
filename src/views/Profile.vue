@@ -66,20 +66,35 @@
 
         <div class="mt-8" v-show="!editFlag">
             <div class="d-flex tab">
-                <h3 :class="postFlag" @click="movePostTab">投稿</h3>
+                <h3 :class="postFlag" @click="moveMineTab">投稿</h3>
                 <h3 id="star" :class="starFlag" @click="moveStarTab">お気に入り</h3>
             </div>
             <v-card
+                v-show="isMine"
                 elevatuon="2"
                 v-for="item in items"
                 :key="item.id"
                 class="mb-2"
             >
-                <div class="cardTitle">
-                    <v-card-title class="titleItem"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
-                    <h4 class="titleItem text-right mr-5 my-auto">X</h4>
+                <div class="d-flex" height=40>
+                    <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
                 </div>
-                <v-card-text>{{ item.text }}</v-card-text>
+                <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
+            </v-card>
+
+            <v-card
+                v-show="isStar"
+                elevatuon="2"
+                v-for="item in starItems"
+                :key="item.id"
+                class="mb-2"
+            >
+                <div height=40>
+                    <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+                </div>
+                <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
             </v-card>
         </div>
 
@@ -88,7 +103,7 @@
 
 <script>
 import db from "../plugins/firebase";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, getDoc, query, orderBy } from "firebase/firestore";
 
 export default {
     data(){
@@ -106,15 +121,12 @@ export default {
                 value => value.length < 15 || "14文字以内で入力してください",
             ],
             loadFlag:false,
-            items:[
-                {id:1,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
-                {id:2,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
-                {id:3,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
-                {id:4,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
-                {id:5,title:"title",url:"https://www.google.com/",text:"やる気のあるやつ、大募集！"},
-            ],
+            items:[],
+            starItems:[],
             postFlag:"isSelect",
             starFlag:"",
+            isStar:false,
+            isMine:true,
         }
     },
     methods:{
@@ -156,12 +168,16 @@ export default {
             }
             
         },
-        movePostTab(){
+        moveMineTab(){
             this.postFlag = "isSelect";
+            this.isMine = true;
+            this.isStar = false;
             this.starFlag = "";
         },
         moveStarTab(){
             this.starFlag = "isSelect";
+            this.isStar = true;
+            this.isMine = false;
             this.postFlag = "";
         }
     },
@@ -174,6 +190,16 @@ export default {
         this.PRText = data.data().PRText;
         this.follow = data.data().follow;
         this.follower = data.data().follower;
+
+        const collectionRef =  collection(db, "audition");
+        const q = query(collectionRef, orderBy("id","desc"));
+        const ADdatas = await getDocs(q);
+        
+        ADdatas.forEach((ADdata)=>{
+            if(ADdata.data().uid === sessionStorage.getItem("user")){
+                this.items.push(ADdata.data());   
+            }
+        }); 
     }
 }
 </script>

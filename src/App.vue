@@ -42,6 +42,7 @@
             class="mx-5"
             icon
             :to="icon.to"
+            @click="formClose"
           >
             <v-icon size="auto" color="white">
               {{ icon.name }}
@@ -73,6 +74,9 @@ export default Vue.extend({
       sessionStorage.removeItem("user");
       this.$router.push("/login")
       this.$router.go({path: this.$router.currentRoute.path, force: true});
+    },
+    formClose(){
+      this.$store.state.postFlag = false;
     }
   },
   computed:{

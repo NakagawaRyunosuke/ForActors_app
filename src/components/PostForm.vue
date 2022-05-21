@@ -35,7 +35,9 @@ export default {
                     title:this.title,
                     url:this.url,
                     text:this.text,
+                    color:"",
                     uid:sessionStorage.getItem("user"),
+                    id:date.getTime().toString()
                 })
                 .then(()=>{
                     console.log("ok");
