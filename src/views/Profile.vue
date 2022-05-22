@@ -73,27 +73,47 @@
                 v-show="isMine"
                 elevatuon="2"
                 v-for="item in items"
-                :key="item.id"
+                :key="item.dataId"
                 class="mb-2"
             >
-                <div class="d-flex" height=40>
+                <div class="d-flex mt-5" height=40>
                     <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+                    <v-row justify="center">
+                        <v-btn
+                            class="mt-4 rounded-b-xl"
+                            height=60
+                            tile
+                            elevation="3"
+                            color="grey lighten-2"
+                            @click="postDelBtn(item.dataId)"
+                        ><v-icon large>mdi-delete-forever</v-icon></v-btn>
+                    </v-row>
                 </div>
-                <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
                 <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
             </v-card>
 
             <v-card
                 v-show="isStar"
                 elevatuon="2"
-                v-for="item in starItems"
-                :key="item.id"
+                v-for="item in plusItems"
+                :key="item.dataId"
                 class="mb-2"
             >
-                <div height=40>
+                <div class="d-flex mt-5" height=40>
                     <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+                    <v-row justify="center">
+                        <v-btn
+                            class="mt-4 rounded-b-xl"
+                            height=60
+                            tile
+                            elevation="3"
+                            color="grey lighten-2"
+                            @click="starDelBtn(item.dataId)"
+                        ><v-icon large>mdi-delete-forever</v-icon></v-btn>
+                    </v-row>
                 </div>
-                <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
                 <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
             </v-card>
         </div>
@@ -103,7 +123,7 @@
 
 <script>
 import db from "../plugins/firebase";
-import { collection, getDocs, doc, updateDoc, getDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc, getDoc, query, orderBy, deleteDoc, where } from "firebase/firestore";
 
 export default {
     data(){
@@ -122,11 +142,12 @@ export default {
             ],
             loadFlag:false,
             items:[],
-            starItems:[],
+            plusItems:[],
             postFlag:"isSelect",
             starFlag:"",
             isStar:false,
             isMine:true,
+            clickDataId:"",
         }
     },
     methods:{
@@ -179,10 +200,76 @@ export default {
             this.isStar = true;
             this.isMine = false;
             this.postFlag = "";
+        },
+        async getPlusDatas(){
+            this.plusItems = [];
+            const collectionRef = collection(db, "users", sessionStorage.getItem("user"),"star");
+            await getDocs(collectionRef)
+            .then((res)=>{
+                res.forEach((starData)=>{
+                    this.plusItems.push(starData.data());
+                });
+            })
+            .catch((err)=>{
+                console.log(err)
+            });
+        },
+        async postDelBtn(dataId){
+            const collectionRef = collection(db, "audition");
+            const q = query(collectionRef, where("dataId", "==", dataId));
+            await getDocs(q)
+            .then((res)=>{
+                res.forEach((data)=>{
+                this.clickDataId = data.id;
+                });
+            })
+            .catch((err)=>{
+                console.log(err)
+            });
+            const docRef = doc(db, "audition", this.clickDataId);
+            await deleteDoc(docRef)
+            .catch((err)=>{
+                console.log(err)
+            });
+            this.refresh();
+        },
+        async starDelBtn(dataId){
+            const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "star");
+            const q = query(collectionRef, where("dataId", "==", dataId));
+            await getDocs(q)
+            .then((res)=>{
+                res.forEach((data)=>{
+                this.clickDataId = data.id;
+                });
+            })
+            .catch((err)=>{
+                console.log(err)
+            });
+            const docRef = doc(db, "users", sessionStorage.getItem("user"), "star", this.clickDataId);
+            await deleteDoc(docRef)
+            .catch((err)=>{
+                console.log(err)
+            });
+            this.refresh();
+
+        },
+        async refresh(){
+            this.items = [];
+            this.plusItems = [];
+            const collectionRef =  collection(db, "audition");
+            const q = query(collectionRef, orderBy("dataId","desc"));
+            const ADdatas = await getDocs(q);
+            
+            ADdatas.forEach((ADdata)=>{
+                if(ADdata.data().uid === sessionStorage.getItem("user")){
+                    this.items.push(ADdata.data());   
+                }
+            }); 
+            this.getPlusDatas();
         }
     },
     //クリエイト時、プロフィールデータを取得、表示
-    async created(){
+    async mounted(){
         const docRef = doc(db, "users", sessionStorage.getItem("user"));
         const data = await getDoc(docRef);
         this.name = data.data().name;
@@ -192,7 +279,7 @@ export default {
         this.follower = data.data().follower;
 
         const collectionRef =  collection(db, "audition");
-        const q = query(collectionRef, orderBy("id","desc"));
+        const q = query(collectionRef, orderBy("dataId","desc"));
         const ADdatas = await getDocs(q);
         
         ADdatas.forEach((ADdata)=>{
@@ -200,6 +287,7 @@ export default {
                 this.items.push(ADdata.data());   
             }
         }); 
+        this.getPlusDatas();
     }
 }
 </script>
@@ -250,6 +338,6 @@ picture img{
     border-bottom: 2px solid black;
 }
 .isSelect{
-    background-color: rgba(0, 0, 0, 0.248);
+    background-color: rgba(134, 131, 131, 0.248);
 }
 </style>

@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     uid:"",
-    postFlag:false
+    postFlag:false,
+    items:[]
   },
   mutations: {
   },

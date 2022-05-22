@@ -1,10 +1,10 @@
 <template>
-    <v-card class="text-center form">
+    <v-card class="text-center form" elevation="5">
         <h3 class="text-right" @click="closeForm">X</h3>
         <div>
             <v-text-field label="タイトル" v-model="title"></v-text-field>
             <v-text-field label="サイトのURL" v-model="url"></v-text-field>
-            <v-textarea label="募集コメント" v-model="text"></v-textarea>
+            <v-textarea label="募集要項・期限" v-model="text"></v-textarea>
         </div>
         <v-btn @click="post" :loading="loadFlag">投稿</v-btn>
     </v-card>
@@ -12,10 +12,19 @@
 
 <script>
 import db from "../plugins/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, limit, getDocs, query, orderBy } from "firebase/firestore";
 
 export default {
     methods:{
+        async refresh(){
+            this.$store.state.items = [];
+            const collectionRef = collection(db, "audition");
+            const q = query(collectionRef, orderBy("dataId", "desc"), limit(30));
+            const datas = await getDocs(q);
+            datas.forEach((data)=>{
+                this.$store.state.items.push(data.data());
+            });
+        },
         closeForm(){
             if(this.$store.state.postFlag){
                 this.$store.state.postFlag = false;
@@ -35,14 +44,12 @@ export default {
                     title:this.title,
                     url:this.url,
                     text:this.text,
-                    color:"",
                     uid:sessionStorage.getItem("user"),
-                    id:date.getTime().toString()
+                    dataId:date.getTime().toString()
                 })
                 .then(()=>{
-                    console.log("ok");
                     this.loadFlag = false;
-                    this.$router.go({path: this.$router.currentRoute.path, force: true});
+                    this.refresh();
                 })
                 .catch((err)=>{
                     alert(err);

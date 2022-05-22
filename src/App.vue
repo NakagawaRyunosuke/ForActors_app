@@ -26,6 +26,7 @@
     
     <v-footer
       padless
+      class="footer"
     >
       <v-card
         flat

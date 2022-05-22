@@ -1,5 +1,8 @@
 <template>
   <v-container>
+    <div class="alertWrapper">
+      <Alert v-show="alertFlag" class="alert"/>
+    </div>
     <div class="d-flex text">
       <h3 class="mr-16">みんなのオーディション情報</h3>
       <v-icon @click="refresh">mdi-refresh</v-icon>
@@ -7,8 +10,8 @@
     <div class="auditionBoad">
       <v-card
         elevatuon="2"
-        v-for="item in items"
-        :key="item.id"
+        v-for="item in this.$store.state.items"
+        :key="item.dataId"
         class="mb-2"
       >
         <div class="d-flex" height=40>
@@ -18,14 +21,14 @@
                 class="mt-4 rounded-b-xl"
                 height=60
                 tile
-                elevation="0"
-                :color="item.color"
-                @click="clickStar(item.id)"
-            ><v-icon large>mdi-star-outline</v-icon></v-btn>
+                elevation="3"
+                color="grey lighten-2"
+                @click="clickPlus(item.dataId)"
+            ><v-icon large>mdi-plus</v-icon></v-btn>
           </v-row>
         </div>
 
-        <v-card-title class="py-0 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+        <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
         <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
       </v-card>
     </div>
@@ -38,40 +41,41 @@
 <script>
 import PostBtn from "../components/PostBtn.vue";
 import PostForm from "../components/PostForm.vue";
+import Alert from "../components/Alert.vue";
 import db from "../plugins/firebase";
-import { collection, getDocs, orderBy, query, where, updateDoc, doc } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where, limit, setDoc, doc } from "firebase/firestore";
 
 export default {
   components:{
     PostBtn,
-    PostForm
+    PostForm,
+    Alert
   },
   async created(){
     const user =sessionStorage.getItem('user');
     if(!user){
       this.$router.push("/login");
+    }else{
+      this.$store.state.items = [];
+      const collectionRef = collection(db, "audition");
+      const q = query(collectionRef, orderBy("dataId", "desc"), limit(30));
+      const datas = await getDocs(q);
+      datas.forEach((data)=>{
+        this.$store.state.items.push(data.data());
+      });
     }
-
-    const collectionRef = collection(db, "audition");
-    const q = query(collectionRef, orderBy("id", "desc"));
-    const datas = await getDocs(q);
-    datas.forEach((data)=>{
-      this.items.push(data.data());
-    });
   },
   data(){
     return{
-      items:[],
       clickData:null,
       clickDataId:"",
-
+      alertFlag:false,
     }
   },
   methods:{
-    async clickStar(id){
-      this.loadFlag = true;
+    async clickPlus(dataId){
       const collectionRef = collection(db, "audition");
-      const q = query(collectionRef, where("id", "==", id));
+      const q = query(collectionRef, where("dataId", "==", dataId));
       await getDocs(q)
       .then((res)=>{
         res.forEach((data)=>{
@@ -83,31 +87,28 @@ export default {
         console.log(err)
       });
 
-      if(this.clickData.color == "yellow"){
-        const docRef = doc(db, "audition", this.clickDataId);
-        await updateDoc(docRef,{
-          color:""
-        });
-        this.refresh();
-      }else{
-        const docRef = doc(db, "audition", this.clickDataId);
-        await updateDoc(docRef,{
-          color:"yellow"
-        });
-        this.refresh();
-      }
-
+      
+      const docRef = doc(db, "users", sessionStorage.getItem("user"), "star", this.clickDataId);
+      await setDoc(docRef,this.clickData)
+      .catch((err)=>{
+        console.log(err);
+      });
+      this.alertFlag = true;
+      setTimeout(()=>{
+        this.alertFlag = false;
+      },2000);
     },
     async refresh(){
-      this.items = [];
+      this.$store.state.items = [];
       const collectionRef = collection(db, "audition");
-      const q = query(collectionRef, orderBy("id", "desc"));
+      const q = query(collectionRef, orderBy("dataId", "desc"), limit(30));
       const datas = await getDocs(q);
       datas.forEach((data)=>{
-        this.items.push(data.data());
+        this.$store.state.items.push(data.data());
       });
-    }
-  }
+    },
+  },
+  
 }
 </script>
 
@@ -123,10 +124,29 @@ export default {
   overflow-x: hidden;
 }
 .text{
-  border-bottom: 1px solid black;
+  border-bottom: 0.5px solid black;
 }
 .title{
   width: 50%;
+}
+.alertWrapper{
+  position: relative;
+}
+.alert{
+  position: absolute;
+  top:0;
+  z-index: 2;
+  animation: anim 2s;
+}
+@keyframes anim {
+  0% {
+    transform: translateX(-40px);
+  }
+
+  50% {
+    transform: translateX(0px);
+  }
+
 }
 </style>
 
