@@ -1,121 +1,130 @@
 <template>
     <v-container>
-        <h2 class="text-center" v-show="!editFlag">{{name}}</h2>
-        <v-text-field v-model="name" v-show="editFlag" :rules="fieldRules"></v-text-field>
-        <div>
+        <div v-show="contentsFlag">
+            <followList :followItems="followItems" v-show="followPageFlag" @back="back"/>
+            <followerList :followerItems="followerItems" v-show="followerPageFlag" @back="back"/>
+        </div>
+        <div v-show="!contentsFlag">
+            <h2 class="text-center" v-show="!editFlag">{{name}}</h2>
+            <v-text-field v-model="name" v-show="editFlag" :rules="fieldRules"></v-text-field>
             <div>
-                <v-card
-                    class="pa-2 transparent"
-                    outlined
-                    tile
-                >
-                    <div class="text-center">
-                        <picture>
-                            <source :srcset="src">
-                            <img src="../assets/default.png" alt="default">
-                        </picture>
-                        <div class="imgInput" v-show="editFlag">
-                            <v-file-input
-                                hide-input
-                                prepend-icon="mdi-image-edit"
-                                class="inputIcon"
-                                v-model="image"
-                                @change="editImg"
-                                accept="image/*"
-                            ></v-file-input>
+                <div>
+                    <v-card
+                        class="pa-2 transparent"
+                        outlined
+                        tile
+                    >
+                        <div class="text-center">
+                            <picture>
+                                <source :srcset="src">
+                                <img src="../assets/default.png" alt="default">
+                            </picture>
+                            <div class="imgInput" v-show="editFlag">
+                                <v-file-input
+                                    hide-input
+                                    prepend-icon="mdi-image-edit"
+                                    class="inputIcon"
+                                    v-model="image"
+                                    @change="editImg"
+                                    accept="image/*"
+                                ></v-file-input>
+                            </div>
                         </div>
-                    </div>
-                </v-card>
+                    </v-card>
+                </div>
+                <div>
+                    <v-card
+                        class="pa-2 transparent mt-4"
+                        outlined
+                        tile
+                    >
+                        <v-row no-gutters v-show="!editFlag">
+                            <v-col class="text-center" @click="showFollow">
+                                <h4>フォロー</h4>
+                                <p>{{ follow }}</p>
+                                
+                            </v-col>
+                            <v-col class="text-center" @click="showFollower">
+                                <h4>フォロワー</h4>
+                                <p>{{ follower }}</p>
+
+                            </v-col>
+                        </v-row>
+                        <div class="editBtn">
+                            <v-btn @click="editProfile" :loading="loadFlag" color="white"><h4>{{ btnText }}</h4></v-btn>
+                        </div>
+                    </v-card>
+                </div>
             </div>
-            <div>
+
+            <div class="mt-12">
+                <v-textarea
+                    ref="input"
+                    name="PRText"
+                    label="自己紹介・PR・Youtube動画のリンクなど"
+                    auto-grow
+                    :readonly="!editFlag"
+                    auto-complete
+                    v-model="PRText"
+                    rows=1
+                ></v-textarea>
+            </div>
+
+            <div class="mt-8" v-show="!editFlag">
+                <div class="d-flex tab">
+                    <h3 :class="postFlag" @click="moveMineTab">投稿</h3>
+                    <h3 id="star" :class="starFlag" @click="moveStarTab">お気に入り</h3>
+                </div>
                 <v-card
-                    class="pa-2 transparent mt-4"
-                    outlined
-                    tile
+                    v-show="isMine"
+                    elevatuon="2"
+                    v-for="(item, index) in items"
+                    :key="`post-${index}`"
+                    class="mb-2"
                 >
-                    <v-row no-gutters v-show="!editFlag">
-                        <v-col class="text-center">
-                            <h4>フォロー</h4>
-                            <p>{{ follow }}</p>
-                        </v-col>
-                        <v-col class="text-center">
-                            <h4>フォロワー</h4>
-                            <p>{{ follower }}</p>
-                        </v-col>
-                    </v-row>
-                    <div class="editBtn">
-                        <v-btn @click="editProfile" :loading="loadFlag" color="white"><h4>{{ btnText }}</h4></v-btn>
+                    <div class="d-flex mt-5" height=40>
+                        <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+                        <v-row justify="center">
+                            <v-btn
+                                class="mt-4 rounded-b-xl"
+                                height=60
+                                tile
+                                elevation="3"
+                                color="grey lighten-2"
+                                @click="postDelBtn(item.dataId)"
+                            ><v-icon large>mdi-delete-forever</v-icon></v-btn>
+                        </v-row>
                     </div>
+                    <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                    <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
+                </v-card>
+
+                <v-card
+                    v-show="isStar"
+                    elevatuon="2"
+                    v-for="(item, index) in plusItems"
+                    :key="`star-${index}`"
+                    class="mb-2"
+                >
+                    <div class="d-flex mt-5" height=40>
+                        <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
+                        <v-row justify="center">
+                            <v-btn
+                                class="mt-4 rounded-b-xl"
+                                height=60
+                                tile
+                                elevation="3"
+                                color="grey lighten-2"
+                                @click="starDelBtn(item.dataId)"
+                            ><v-icon large>mdi-delete-forever</v-icon></v-btn>
+                        </v-row>
+                    </div>
+                    <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
+                    <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
                 </v-card>
             </div>
         </div>
 
-        <div class="mt-12">
-            <v-textarea
-                ref="input"
-                name="PRText"
-                label="自己紹介・PR・Youtube動画のリンクなど"
-                auto-grow
-                :readonly="!editFlag"
-                auto-complete
-                v-model="PRText"
-                rows=1
-            ></v-textarea>
-        </div>
-
-        <div class="mt-8" v-show="!editFlag">
-            <div class="d-flex tab">
-                <h3 :class="postFlag" @click="moveMineTab">投稿</h3>
-                <h3 id="star" :class="starFlag" @click="moveStarTab">お気に入り</h3>
-            </div>
-            <v-card
-                v-show="isMine"
-                elevatuon="2"
-                v-for="item in items"
-                :key="item.dataId"
-                class="mb-2"
-            >
-                <div class="d-flex mt-5" height=40>
-                    <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
-                    <v-row justify="center">
-                        <v-btn
-                            class="mt-4 rounded-b-xl"
-                            height=60
-                            tile
-                            elevation="3"
-                            color="grey lighten-2"
-                            @click="postDelBtn(item.dataId)"
-                        ><v-icon large>mdi-delete-forever</v-icon></v-btn>
-                    </v-row>
-                </div>
-                <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
-                <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
-            </v-card>
-
-            <v-card
-                v-show="isStar"
-                elevatuon="2"
-                v-for="item in plusItems"
-                :key="item.dataId"
-                class="mb-2"
-            >
-                <div class="d-flex mt-5" height=40>
-                    <v-card-subtitle class="my-auto title">{{ item.date }}</v-card-subtitle>
-                    <v-row justify="center">
-                        <v-btn
-                            class="mt-4 rounded-b-xl"
-                            height=60
-                            tile
-                            elevation="3"
-                            color="grey lighten-2"
-                            @click="starDelBtn(item.dataId)"
-                        ><v-icon large>mdi-delete-forever</v-icon></v-btn>
-                    </v-row>
-                </div>
-                <v-card-title class="py-4 px-4"><a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></v-card-title>
-                <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
-            </v-card>
-        </div>
 
     </v-container>
 </template>
@@ -123,8 +132,14 @@
 <script>
 import db from "../plugins/firebase";
 import { collection, getDocs, doc, updateDoc, getDoc, query, orderBy, deleteDoc, where } from "firebase/firestore";
+import followList from "../components/followList.vue";
+import followerList from "../components/followerList.vue";
 
 export default {
+    components:{
+        followList,
+        followerList
+    },
     data(){
         return{
             src:null,
@@ -142,11 +157,16 @@ export default {
             loadFlag:false,
             items:[],
             plusItems:[],
+            followItems:[],
+            followerItems:[],
             postFlag:"isSelect",
             starFlag:"",
             isStar:false,
             isMine:true,
             clickDataId:"",
+            followPageFlag:false,
+            followerPageFlag:false,
+            contentsFlag:false
         }
     },
     methods:{
@@ -264,6 +284,48 @@ export default {
                 }
             }); 
             this.getPlusDatas();
+        },
+        async showFollow(){
+            this.followItems = [];
+            const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "followes");
+            await getDocs(collectionRef)
+            .then((res)=>{
+                res.forEach((data)=>{
+                    this.followItems.push(data.data());
+                });
+                if(this.followItems.length > 0){
+                    this.contentsFlag = true;
+                    this.followPageFlag = true;
+                }
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+            
+        },
+        async showFollower(){
+            this.followerItems = [];
+            const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "followeres");
+            await getDocs(collectionRef)
+            .then((res)=>{
+                res.forEach((data)=>{
+                    this.followerItems.push(data.data());
+                });
+                if(this.followerItems.length > 0){
+                    this.contentsFlag = true;
+                    this.followerPageFlag = true;
+                }
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+
+        },
+        back(value){
+            console.log(value)
+            this.contentsFlag = value;
+            this.followPageFlag = value;
+            this.followerPageFlag = value;
         }
     },
     //マウント時、プロフィールデータを取得、表示

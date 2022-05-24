@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div class="alertWrapper">
-      <Alert v-show="alertFlag" class="alert"/>
+      <Alert v-show="alertFlag" class="alert" :text="'お気に入りに登録！'"/>
     </div>
     <div class="d-flex text">
       <h3 class="mr-16">みんなのオーディション情報</h3>

@@ -1,6 +1,9 @@
 <template>
     <v-container>
-        <Backbtn class="backBtn"/>
+        <div class="alertWrapper">
+            <Alert v-show="alertFlag" class="alert" :text="alertText"/>
+        </div>
+        <Backbtn class="backBtn" :path="'/search'"/>
         <h2 class="text-center">{{name}}</h2>
         <div>
             <div>
@@ -34,9 +37,9 @@
                         </v-col>
                     </v-row>
                     
-                    <div class="text-center mt-8">
-                        <v-btn text class="mr-14" @click="followBtn"><v-icon>mdi-account-plus</v-icon></v-btn>
-                        <v-btn text class="ml-14" @click="messageBtn"><v-icon>mdi-email</v-icon></v-btn>
+                    <div class="d-flex mt-8 px-8">
+                        <v-btn @click="followBtn" :loading="FbtnLoadFlag"><v-icon>mdi-account-plus</v-icon>フォロー</v-btn>
+                        <v-btn class="ml-10" @click="messageBtn" :loading="MbtnLoadFlag"><v-icon>mdi-email</v-icon>メッセージ</v-btn>
                     </div>
                     
                 </v-card>
@@ -62,8 +65,8 @@
                 <v-card
                     v-show="isMine"
                     elevatuon="2"
-                    v-for="item in items"
-                    :key="item.dataId"
+                    v-for="(item, index) in items"
+                    :key="`post-${index}`"
                     class="mb-2"
                 >
                     <div class="d-flex mt-5" height=40>
@@ -76,8 +79,8 @@
                 <v-card
                     v-show="isStar"
                     elevatuon="2"
-                    v-for="item in plusItems"
-                    :key="item.dataId"
+                    v-for="(item, index) in plusItems"
+                    :key="`star-${index}`"
                     class="mb-2"
                 >
                     <div class="d-flex mt-5" height=40>
@@ -93,12 +96,17 @@
 
 <script>
 import db from "../plugins/firebase";
-import { collection, getDocs, doc, getDoc, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, orderBy, setDoc, updateDoc } from "firebase/firestore";
 import Backbtn from "../components/Backbtn.vue";
+import Alert from "../components/Alert.vue";
 
 export default {
+    props:{
+        text:{type:String}
+    },
     components:{
         Backbtn,
+        Alert
     },
     data(){
         return{
@@ -114,6 +122,10 @@ export default {
             isMine:true,
             postFlag:"isSelect",
             starFlag:"",
+            alertText:"",
+            alertFlag:false,
+            FbtnLoadFlag:false,
+            MbtnLoadFlag:false,
         }
     },
     methods:{
@@ -143,10 +155,80 @@ export default {
             });
         },
         async followBtn(){
-            // const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "followes");
+            this.FbtnLoadFlag = true;
+            const docRef = doc(db, "users", sessionStorage.getItem("user"), "followes", sessionStorage.getItem("otherUser"));
+            await setDoc(docRef,
+                {
+                    name:this.name,
+                    src:this.src,
+                }
+            )
+            .catch((err)=>{
+                console.log(err);
+            });
+
+            const mineDocRef = doc(db, "users", sessionStorage.getItem("user"));
+            let mineFollow = 0;
+            let mineDoc = null;
+            await getDoc(mineDocRef)
+            .then((res)=>{
+                mineDoc = res.data();
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+
+            const docRef2 = doc(db, "users", sessionStorage.getItem("otherUser"), "followers", sessionStorage.getItem("user"));
+            await setDoc(docRef2, 
+                {
+                    name: mineDoc.name,
+                    src: mineDoc.src
+                }
+            ).catch((err)=>{
+                console.log(err);
+            });
+            this.FbtnLoadFlag = false;
+            this.alertText = "フォローしました";
+            this.alertFlag = true;
+            setTimeout(()=>{
+                this.alertFlag = false;
+            },2000);
+
+            const docRef3 = doc(db, "users", sessionStorage.getItem("user"));
+            await updateDoc(docRef3,
+                {
+                    follow:(mineFollow+1),
+                }
+            )
+            .catch((err)=>{
+                console.log(err);
+            });
+
+            const docRef4 = doc(db, "users", sessionStorage.getItem("otherUser"));
+            await updateDoc(docRef4,
+                {
+                    follower:(this.follower+1),
+                }
+            )
+            .catch((err)=>{
+                console.log(err);
+            });
+
+
+
         },
         async messageBtn(){
+            console.log("作成中");
+            // const docRef = doc(db, "users", sessionStorage.getItem("user"), "message", sessionStorage.getItem("otherUser"));
+            // await setDoc(docRef,
+            //     {
+            //         lastText:"",
 
+            //     }
+            // )
+            // .catch((err)=>{
+            //     console.log(err);
+            // });
         }
     },
     async mounted(){
@@ -207,5 +289,24 @@ export default {
     position: absolute;
     top: 10px;
     left: 10px;
+}
+.alertWrapper{
+  position: relative;
+}
+.alert{
+  position: absolute;
+  top:0;
+  z-index: 2;
+  animation: anim 2s;
+}
+@keyframes anim {
+  0% {
+    transform: translateX(-40px);
+  }
+
+  50% {
+    transform: translateX(0px);
+  }
+
 }
 </style>

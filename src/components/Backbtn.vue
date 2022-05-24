@@ -4,9 +4,12 @@
 
 <script>
 export default {
+    props:{
+        path:String
+    },
     methods:{
         back(){
-            this.$router.push("/search");
+            this.$router.push(this.path);
         }
     }
 }
