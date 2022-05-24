@@ -7,7 +7,7 @@ export default new Vuex.Store({
   state: {
     uid:"",
     postFlag:false,
-    items:[]
+    items:[],
   },
   mutations: {
   },

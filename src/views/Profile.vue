@@ -1,5 +1,5 @@
 <template>
-    <v-container class="text-left">
+    <v-container>
         <h2 class="text-center" v-show="!editFlag">{{name}}</h2>
         <v-text-field v-model="name" v-show="editFlag" :rules="fieldRules"></v-text-field>
         <div>
@@ -53,7 +53,6 @@
         <div class="mt-12">
             <v-textarea
                 ref="input"
-                color="teal"
                 name="PRText"
                 label="自己紹介・PR・Youtube動画のリンクなど"
                 auto-grow
@@ -178,7 +177,6 @@ export default {
         editImg(){
             const reader = new FileReader();
             const file = this.image;
-            console.log(file)
             if(file){
                 reader.readAsDataURL(file);
             }else{
@@ -268,7 +266,7 @@ export default {
             this.getPlusDatas();
         }
     },
-    //クリエイト時、プロフィールデータを取得、表示
+    //マウント時、プロフィールデータを取得、表示
     async mounted(){
         const docRef = doc(db, "users", sessionStorage.getItem("user"));
         const data = await getDoc(docRef);

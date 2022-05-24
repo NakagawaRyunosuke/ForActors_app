@@ -7,6 +7,7 @@ import EmailForm from "../views/EmailForm.vue"
 import Search from "../views/Search.vue"
 import Profile from "../views/Profile.vue"
 import Message from "../views/Message.vue"
+import othersProfile from "../views/othersProfile"
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: "/message",
     name: "Message",
     component: Message
+  },
+  {
+    path:"/othersProfile",
+    name: "OthersProfile",
+    component: othersProfile
   }
 
 ]
