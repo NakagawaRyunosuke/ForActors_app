@@ -19,7 +19,6 @@
                 <v-btn
                     class="mb-6 mt-6"
                     width="30%"
-                    color="deep-orange lighten-3"
                     @click="login"
                 >ログイン</v-btn>
             </v-card-text>
@@ -90,7 +89,6 @@ export default {
     height: 100%;
     width: 100%;
     margin-top: 2px;
-    background-color: rgba(216, 245, 216, 0.753);
 }
 
 </style>

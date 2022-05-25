@@ -156,6 +156,8 @@ export default {
         },
         async followBtn(){
             this.FbtnLoadFlag = true;
+            let follows = [];
+            let followers = [];
             const docRef = doc(db, "users", sessionStorage.getItem("user"), "followes", sessionStorage.getItem("otherUser"));
             await setDoc(docRef,
                 {
@@ -168,7 +170,6 @@ export default {
             });
 
             const mineDocRef = doc(db, "users", sessionStorage.getItem("user"));
-            let mineFollow = 0;
             let mineDoc = null;
             await getDoc(mineDocRef)
             .then((res)=>{
@@ -194,10 +195,32 @@ export default {
                 this.alertFlag = false;
             },2000);
 
+            const followsCollectionRef = collection(db, "users", sessionStorage.getItem("user"), "followes");
+            await getDocs(followsCollectionRef)
+            .then((res)=>{
+                res.forEach((data)=>{
+                    follows.push(data.data());
+                });
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+
+            const followersCollectionRef = collection(db, "users", sessionStorage.getItem("otherUser"), "followers");
+            await getDocs(followersCollectionRef)
+            .then((res)=>{
+                res.forEach((data)=>{
+                    followers.push(data.data());
+                });
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+
             const docRef3 = doc(db, "users", sessionStorage.getItem("user"));
             await updateDoc(docRef3,
                 {
-                    follow:(mineFollow+1),
+                    follow:follows.length,
                 }
             )
             .catch((err)=>{
@@ -207,18 +230,19 @@ export default {
             const docRef4 = doc(db, "users", sessionStorage.getItem("otherUser"));
             await updateDoc(docRef4,
                 {
-                    follower:(this.follower+1),
+                    follower:followers.length,
                 }
             )
             .catch((err)=>{
                 console.log(err);
             });
-
+            console.log(follows)
+            console.log(follows.length)
 
 
         },
         async messageBtn(){
-            console.log("作成中");
+            alert("作成中");
             // const docRef = doc(db, "users", sessionStorage.getItem("user"), "message", sessionStorage.getItem("otherUser"));
             // await setDoc(docRef,
             //     {

@@ -67,7 +67,11 @@ export default {
     methods:{
         clickCard(index){
             sessionStorage.setItem("otherUser",this.showUsers[index].uid);
-            this.$router.push("/othersProfile");
+            if(this.showUsers[index].uid == sessionStorage.getItem("user")){
+                this.$router.push("/profile");
+            }else{
+                this.$router.push("/othersProfile");
+            }
         }
     }
 }

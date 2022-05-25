@@ -7,6 +7,7 @@
       <h3 class="mr-16">みんなのオーディション情報</h3>
       <v-icon @click="refresh">mdi-refresh</v-icon>
     </div>
+    <VueLoading v-show="loadFlag" type="spin" color="#333" :size="{ width: '100px', height: '100px' }"/>
     <div class="auditionBoad">
       <v-card
         elevatuon="2"
@@ -42,6 +43,7 @@
 import PostBtn from "../components/PostBtn.vue";
 import PostForm from "../components/PostForm.vue";
 import Alert from "../components/Alert.vue";
+import { VueLoading } from 'vue-loading-template';
 import db from "../plugins/firebase";
 import { collection, getDocs, orderBy, query, where, limit, setDoc, doc } from "firebase/firestore";
 
@@ -49,9 +51,11 @@ export default {
   components:{
     PostBtn,
     PostForm,
-    Alert
+    Alert,
+    VueLoading
   },
   async created(){
+    this.loadFlag = true;
     const user =sessionStorage.getItem('user');
     if(!user){
       this.$router.push("/login");
@@ -63,6 +67,7 @@ export default {
       datas.forEach((data)=>{
         this.$store.state.items.push(data.data());
       });
+      this.loadFlag = false;
     }
   },
   data(){
@@ -70,6 +75,7 @@ export default {
       clickData:null,
       clickDataId:"",
       alertFlag:false,
+      loadFlag:false
     }
   },
   methods:{

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="list">
         <v-card
             class="mt-4"
         >
@@ -35,5 +35,9 @@
     border-radius: 100%;
     border: 2px solid rgba(146, 142, 142, 0.729);
     background-color: rgba(128, 128, 128, 0.514);
+}
+.list{
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 </style>

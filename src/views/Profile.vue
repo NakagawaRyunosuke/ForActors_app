@@ -305,7 +305,7 @@ export default {
         },
         async showFollower(){
             this.followerItems = [];
-            const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "followeres");
+            const collectionRef = collection(db, "users", sessionStorage.getItem("user"), "followers");
             await getDocs(collectionRef)
             .then((res)=>{
                 res.forEach((data)=>{
