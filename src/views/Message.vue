@@ -1,5 +1,6 @@
 <template>
     <div class="list">
+        <h2>これはテストページです。現在開発中のためもうしばらくお待ちください</h2>
         <v-card
             class="mt-4"
         >
