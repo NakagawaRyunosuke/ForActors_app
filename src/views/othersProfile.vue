@@ -38,7 +38,7 @@
                     </v-row>
                     
                     <div class="d-flex mt-8 px-8">
-                        <v-btn @click="followBtn" :loading="FbtnLoadFlag"><v-icon>mdi-account-plus</v-icon>フォロー</v-btn>
+                        <v-btn @click="followBtn" :loading="FbtnLoadFlag" :disabled="followFlag"><v-icon>mdi-account-plus</v-icon>フォロー</v-btn>
                         <v-btn class="ml-10" @click="messageBtn" :loading="MbtnLoadFlag"><v-icon>mdi-email</v-icon>メッセージ</v-btn>
                     </div>
                     
@@ -110,6 +110,7 @@ export default {
     },
     data(){
         return{
+            followFlag:false,
             otherUid: sessionStorage.getItem("otherUser"),
             name:"",
             src:"",
@@ -259,6 +260,7 @@ export default {
     },
     async mounted(){
         const docRef = doc(db, "users", this.otherUid);
+        const FcollectionRef = collection(db, "users", sessionStorage.getItem("user"), "followes");
         const data = await getDoc(docRef);
         this.name = data.data().name;
         this.src = data.data().src;
@@ -277,6 +279,20 @@ export default {
             }
         }); 
         this.getPlusDatas();
+
+        await getDocs(FcollectionRef)
+        .then((res)=>{
+            res.forEach((data)=>{
+                if(data.id == this.otherUid){
+                    this.followFlag = true;
+                }else{
+                    this.followFlag = false;
+                }
+            });
+        })
+        .catch((err)=>{
+            console.log(err)
+        });
     }
 }
 </script>
