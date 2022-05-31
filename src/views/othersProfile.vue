@@ -113,6 +113,7 @@ export default {
             otherUid: sessionStorage.getItem("otherUser"),
             name:"",
             src:"",
+            uid:"",
             follow:0,
             follower:0,
             PRText:"",
@@ -163,6 +164,7 @@ export default {
                 {
                     name:this.name,
                     src:this.src,
+                    uid:this.uid
                 }
             )
             .catch((err)=>{
@@ -260,6 +262,7 @@ export default {
         const data = await getDoc(docRef);
         this.name = data.data().name;
         this.src = data.data().src;
+        this.uid = data.data().uid;
         this.PRText = data.data().PRText;
         this.follow = data.data().follow;
         this.follower = data.data().follower;
