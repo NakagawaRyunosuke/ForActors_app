@@ -239,12 +239,22 @@ export default {
             .catch((err)=>{
                 console.log(err);
             });
-            console.log(follows)
-            console.log(follows.length)
-
-
         },
         async messageBtn(){
+            this.MbtnLoadFlag = true;
+            const roomId = sessionStorage.getItem("user")+"@"+sessionStorage.getItem("otherUser");
+            const docRef = doc(db, "messageroom", roomId);
+            await setDoc(docRef,{
+                roomId:roomId,
+                user1:sessionStorage.getItem("user"),
+                user2:sessionStorage.getItem("otherUser")
+            })
+            .then(()=>{
+                this.MbtnLoadFlag = false;
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
             this.$router.push("/messageroom");
         }
     },
