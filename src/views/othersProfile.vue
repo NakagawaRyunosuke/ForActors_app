@@ -245,17 +245,7 @@ export default {
 
         },
         async messageBtn(){
-            alert("作成中");
-            // const docRef = doc(db, "users", sessionStorage.getItem("user"), "message", sessionStorage.getItem("otherUser"));
-            // await setDoc(docRef,
-            //     {
-            //         lastText:"",
-
-            //     }
-            // )
-            // .catch((err)=>{
-            //     console.log(err);
-            // });
+            this.$router.push("/messageroom");
         }
     },
     async mounted(){

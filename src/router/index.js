@@ -7,7 +7,8 @@ import EmailForm from "../views/EmailForm.vue"
 import Search from "../views/Search.vue"
 import Profile from "../views/Profile.vue"
 import Message from "../views/Message.vue"
-import othersProfile from "../views/othersProfile"
+import othersProfile from "../views/othersProfile.vue"
+import MessageRoom from "../views/MessageRoom.vue"
 
 Vue.use(VueRouter)
 
@@ -51,8 +52,12 @@ const routes = [
     path:"/othersProfile",
     name: "OthersProfile",
     component: othersProfile
+  },
+  {
+    path:"/messageroom",
+    name:"MessageRoom",
+    component:MessageRoom
   }
-
 ]
 
 const router = new VueRouter({

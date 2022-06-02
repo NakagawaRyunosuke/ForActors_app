@@ -100,3 +100,8 @@ export default Vue.extend({
   color: white;
 }
 </style>
+<style>
+body{
+  position: relative;
+}
+</style>
