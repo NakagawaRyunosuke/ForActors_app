@@ -1,7 +1,11 @@
 <template>
-    <div>
-        <Backbtn :path="'/message'"/>
-        <div>
+    <v-container>
+        <v-row>
+            <Backbtn :path="'/message'" class="pl-2 mr-auto my-3"/>
+            <v-btn text @click="refresh" class="pr-2ml-auto my-3"><v-icon>mdi-refresh</v-icon></v-btn>
+        </v-row>
+
+        <div class="cards">
             <v-card
                 v-for="(item,index) in items"
                 :key="`text-${index}`"
@@ -24,15 +28,15 @@
 
         </div>
 
-        <div class="d-flex input mx-5">
+        <div class="d-flex input">
             <v-textarea :auto-grow="growFlag" :rows="rows" v-model="sendtext"></v-textarea>
             <v-btn class="sendBtn" @click="send" text :disabled="btnFlag" :loading="sendFlag"><v-icon class="ml-2">mdi-send</v-icon></v-btn>
         </div>
-    </div>
+    </v-container>
 </template>
 
 <script>
-import { addDoc, collection, doc, getDoc, getDocs } from '@firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, orderBy, query, where } from '@firebase/firestore';
 import Backbtn from "../components/Backbtn.vue";
 import db from "../plugins/firebase";
 
@@ -48,16 +52,16 @@ export default {
             rows:1,
             btnFlag:true,
             sendFlag:false,
-            src:""
+            src:"",
+            roomId:""
         }
     },
     methods:{
         async send(){
             this.sendFlag = true;
             const date = new Date();
-            const time = date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes();
-            const roomId = sessionStorage.getItem("user")+"@"+sessionStorage.getItem("otherUser");
-            const collectionRef = collection(db, "messageroom", roomId, "messages");
+            const time = date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+" "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+            const collectionRef = collection(db, "messageroom", this.roomId, "messages");
             await addDoc(collectionRef,{
                 text:this.sendtext,
                 time:time,
@@ -69,7 +73,23 @@ export default {
             .catch((err)=>{
                 console.log(err);
             });
+            this.refresh();
             this.sendtext = "";
+        },
+        async refresh(){
+            let array = [];
+            const collectionRef = collection(db, "messageroom", this.roomId, "messages");
+            const q = query(collectionRef, orderBy("time", "desc"));
+            await getDocs(q)
+            .then((res)=>{
+                res.forEach((data)=>{
+                    array.push(data.data());
+                });
+                this.items = array;
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
         }
     },
     watch:{
@@ -96,14 +116,52 @@ export default {
         .catch((err)=>{
             console.log(err);
         });
-        const roomId = sessionStorage.getItem("user")+"@"+sessionStorage.getItem("otherUser");
-        const collectionRef = collection(db, "messageroom", roomId, "messages");
-        await getDocs(collectionRef)
+
+        const roomcollectionRef = collection(db, "messageroom");
+        const msgQ1 = query(roomcollectionRef, where("user1", "==", sessionStorage.getItem("user")), where("user2", "==", sessionStorage.getItem("otherUser")));
+        const msgQ2 = query(roomcollectionRef, where("user1", "==", sessionStorage.getItem("otherUser")), where("user2", "==", sessionStorage.getItem("user")));
+        let array = [];
+        await getDocs(msgQ1)
         .then((res)=>{
-            res.forEach(data => {
-                this.items.push(data.data());
+            res.forEach((data)=>{
+                array.push(data.data());
             });
+            if(array.length > 0){
+                this.roomId = array[0].roomId;
+            }
         })
+        .catch((err)=>{
+            console.log(err);
+        });
+        
+        await getDocs(msgQ2)
+        .then((res)=>{
+            res.forEach((data)=>{
+                array.push(data.data());
+            });
+            if(array.length > 0){
+                this.roomId = array[0].roomId;
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+
+        const collectionRef = collection(db, "messageroom", this.roomId, "messages");
+        const q = query(collectionRef, orderBy("time", "desc"));
+        await getDocs(q)
+        .then((res)=>{
+            res.forEach((data)=>{
+                this.items.push(data.data());
+            })
+        })
+        .catch((err)=>{
+           console.log(err);
+        });
+
+        // setInterval(() => {
+        //     this.refresh();
+        // }, 3000);
     }
   
 }
@@ -113,7 +171,10 @@ export default {
 .input{
     position: absolute;
     bottom: 0;
-    width: 90%;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: white;
 }
 .img{
     margin-left: 20px;
@@ -130,5 +191,13 @@ export default {
 .text{
     white-space: pre-line;
 }
-
+.cards{
+  height: 600px;
+  overflow-x: hidden;
+}
+.container{
+    height: 100%;
+    width: 100%;
+    margin-top: 2px;
+}
 </style>

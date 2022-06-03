@@ -39,7 +39,7 @@
                     
                     <div class="d-flex mt-8 px-8">
                         <v-btn @click="followBtn" :loading="FbtnLoadFlag" :disabled="followFlag"><v-icon>mdi-account-plus</v-icon>フォロー</v-btn>
-                        <v-btn class="ml-10" @click="messageBtn" :loading="MbtnLoadFlag"><v-icon>mdi-email</v-icon>メッセージ</v-btn>
+                        <v-btn class="ml-10" @click="messageBtn" :loading="MbtnLoadFlag" :disabled="mountFlag"><v-icon>mdi-email</v-icon>メッセージ</v-btn>
                     </div>
                     
                 </v-card>
@@ -96,7 +96,7 @@
 
 <script>
 import db from "../plugins/firebase";
-import { collection, getDocs, doc, getDoc, query, orderBy, setDoc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, query, orderBy, setDoc, updateDoc,where } from "firebase/firestore";
 import Backbtn from "../components/Backbtn.vue";
 import Alert from "../components/Alert.vue";
 
@@ -124,10 +124,12 @@ export default {
             isMine:true,
             postFlag:"isSelect",
             starFlag:"",
+            msgFlag:false,
             alertText:"",
             alertFlag:false,
             FbtnLoadFlag:false,
             MbtnLoadFlag:false,
+            mountFlag:true
         }
     },
     methods:{
@@ -242,20 +244,25 @@ export default {
         },
         async messageBtn(){
             this.MbtnLoadFlag = true;
-            const roomId = sessionStorage.getItem("user")+"@"+sessionStorage.getItem("otherUser");
-            const docRef = doc(db, "messageroom", roomId);
-            await setDoc(docRef,{
-                roomId:roomId,
-                user1:sessionStorage.getItem("user"),
-                user2:sessionStorage.getItem("otherUser")
-            })
-            .then(()=>{
-                this.MbtnLoadFlag = false;
-            })
-            .catch((err)=>{
-                console.log(err);
-            });
-            this.$router.push("/messageroom");
+            if(this.msgFlag){
+                this.$router.push("/messageroom");
+            }else{
+                const roomId = new Date().getTime().toString();
+                const docRef = doc(db, "messageroom", roomId);
+                await setDoc(docRef,{
+                    roomId:roomId,
+                    user1:sessionStorage.getItem("user"),
+                    user2:sessionStorage.getItem("otherUser")
+                })
+                .then(()=>{
+                    this.MbtnLoadFlag = false;
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+                this.$router.push("/messageroom");
+            }
+
         }
     },
     async mounted(){
@@ -292,6 +299,43 @@ export default {
         })
         .catch((err)=>{
             console.log(err)
+        });
+
+
+        const roomcollectionRef = collection(db, "messageroom");
+        const msgQ1 = query(roomcollectionRef, where("user1", "==", sessionStorage.getItem("user")), where("user2", "==", sessionStorage.getItem("otherUser")));
+        const msgQ2 = query(roomcollectionRef, where("user1", "==", sessionStorage.getItem("otherUser")), where("user2", "==", sessionStorage.getItem("user")));
+        let array = [];
+        await getDocs(msgQ1)
+        .then((res)=>{
+            res.forEach((data)=>{
+                array.push(data.data());
+            });
+            if(array.length > 0){
+                this.mountFlag = false;
+                this.msgFlag = true;
+            }else{
+                this.msgFlag = false;
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+        
+        await getDocs(msgQ2)
+        .then((res)=>{
+            res.forEach((data)=>{
+                array.push(data.data());
+            });
+            if(array.length > 0){
+                this.msgFlag = true;
+                this.mountFlag = false;
+            }else{
+                this.msgFlag = false;
+            }
+        })
+        .catch((err)=>{
+            console.log(err);
         });
     }
 }
