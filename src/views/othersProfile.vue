@@ -110,7 +110,7 @@ export default {
     },
     data(){
         return{
-            followFlag:true,
+            followFlag:false,
             otherUid: sessionStorage.getItem("otherUser"),
             name:"",
             src:"",
@@ -268,6 +268,24 @@ export default {
     async mounted(){
         const docRef = doc(db, "users", this.otherUid);
         const FcollectionRef = collection(db, "users", sessionStorage.getItem("user"), "followes");
+
+        await getDocs(FcollectionRef)
+        .then((res)=>{
+            if(res.size > 0){  
+                res.forEach((data)=>{
+                    if(data.id == this.otherUid){
+                        this.followFlag = true;
+                    }
+                });            
+            }else{
+                this.followFlag = false;
+            }
+        })
+        .catch((err)=>{
+            console.log(err)
+        });
+
+
         const data = await getDoc(docRef);
         this.name = data.data().name;
         this.src = data.data().src;
@@ -275,6 +293,7 @@ export default {
         this.PRText = data.data().PRText;
         this.follow = data.data().follow;
         this.follower = data.data().follower;
+
 
         const collectionRef =  collection(db, "audition");
         const q = query(collectionRef, orderBy("dataId","desc"));
@@ -287,23 +306,7 @@ export default {
         }); 
         this.getPlusDatas();
 
-        await getDocs(FcollectionRef)
-        .then((res)=>{
-            if(res.size > 0){
-                res.forEach((data)=>{
-                    if(data.id == this.otherUid){
-                        this.followFlag = true;
-                    }else{
-                        this.followFlag = false;
-                    }
-                });            
-            }else{
-                this.followFlag = false;
-            }
-        })
-        .catch((err)=>{
-            console.log(err)
-        });
+
 
 
         const roomcollectionRef = collection(db, "messageroom");
