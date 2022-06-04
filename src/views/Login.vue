@@ -48,6 +48,7 @@ export default {
             const auth = getAuth();
             signInWithPopup(auth,provider)
             .then((result)=>{
+                console.log(result)
                 this.$store.state.uid = result.user.uid;
                 sessionStorage.setItem('user', this.$store.state.uid);
                 this.checkData();
