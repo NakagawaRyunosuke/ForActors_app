@@ -21,6 +21,13 @@ jobs:
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          VUE_APP_APIKEY: ${{ secrets.APIKEY }}
+          VUE_APP_AUTHDOMAIN: ${{ secrets.AUTHDOMAIN }}
+          VUE_APP_PROJECTID: ${{ secrets.PROJECTID }}
+          VUE_APP_STORAGEBUCKET: ${{ secrets.STORAGEBUCKET }}
+          VUE_APP_MESSAGINGSENDERID: ${{ secrets.MESSAGINGSENDERID }}
+          VUE_APP_APPID: ${{ secrets.APPID }}
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_VICTORIOUS_CLIFF_038858200 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
