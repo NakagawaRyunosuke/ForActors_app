@@ -63,7 +63,7 @@ export default {
         async checkData(){
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             const data = await getDoc(docRef);
-            if(!data.data()){
+            if(data.data() == undefined){
                 await setDoc(docRef,{
                     uid: sessionStorage.getItem("user"),
                     name:"名無し",

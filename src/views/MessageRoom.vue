@@ -1,10 +1,11 @@
 <template>
     <v-container>
+        
         <v-row>
             <Backbtn :path="'/message'" class="pl-2 mr-auto my-3"/>
             <v-btn text @click="refresh" class="pr-2ml-auto my-3"><v-icon>mdi-refresh</v-icon></v-btn>
         </v-row>
-
+        <VueLoading v-show="loadFlag" type="spin" color="#333" :size="{ width: '100px', height: '100px' }"/>
         <div class="cards">
             <v-card
                 v-for="(item,index) in items"
@@ -39,10 +40,12 @@
 import { addDoc, collection, doc, getDoc, getDocs, orderBy, query, where } from '@firebase/firestore';
 import Backbtn from "../components/Backbtn.vue";
 import db from "../plugins/firebase";
+import { VueLoading } from 'vue-loading-template';
 
 export default {
     components:{
         Backbtn,
+        VueLoading
     },
     data(){
         return{
@@ -53,7 +56,8 @@ export default {
             btnFlag:true,
             sendFlag:false,
             src:"",
-            roomId:""
+            roomId:"",
+            loadFlag:true
         }
     },
     methods:{
@@ -154,6 +158,7 @@ export default {
             res.forEach((data)=>{
                 this.items.push(data.data());
             })
+            this.loadFlag = false;
         })
         .catch((err)=>{
            console.log(err);

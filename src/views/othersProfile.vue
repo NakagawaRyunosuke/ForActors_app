@@ -110,7 +110,7 @@ export default {
     },
     data(){
         return{
-            followFlag:false,
+            followFlag:true,
             otherUid: sessionStorage.getItem("otherUser"),
             name:"",
             src:"",
@@ -289,13 +289,17 @@ export default {
 
         await getDocs(FcollectionRef)
         .then((res)=>{
-            res.forEach((data)=>{
-                if(data.id == this.otherUid){
-                    this.followFlag = true;
-                }else{
-                    this.followFlag = false;
-                }
-            });
+            if(res.size > 0){
+                res.forEach((data)=>{
+                    if(data.id == this.otherUid){
+                        this.followFlag = true;
+                    }else{
+                        this.followFlag = false;
+                    }
+                });            
+            }else{
+                this.followFlag = false;
+            }
         })
         .catch((err)=>{
             console.log(err)
@@ -312,11 +316,13 @@ export default {
                 array.push(data.data());
             });
             if(array.length > 0){
-                this.mountFlag = false;
                 this.msgFlag = true;
             }else{
                 this.msgFlag = false;
             }
+        })
+        .then(()=>{
+            this.mountFlag = false;
         })
         .catch((err)=>{
             console.log(err);
