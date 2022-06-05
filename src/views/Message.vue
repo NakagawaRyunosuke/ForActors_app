@@ -133,7 +133,7 @@ export default {
     background-color: rgba(128, 128, 128, 0.514);
 }
 .list{
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 .time{
