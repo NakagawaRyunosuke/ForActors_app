@@ -70,7 +70,7 @@ export default {
     height: 100%;
     width: 100%;
     margin-top: 2px;
-    background-color: rgba(216, 245, 216, 0.753);
+    background-color: white;
 }
 
 </style>
