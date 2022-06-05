@@ -174,7 +174,7 @@ export default {
 
 <style scoped>
 .input{
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
@@ -198,7 +198,7 @@ export default {
     white-space: pre-line;
 }
 .cards{
-  height: 530px;
+  height: 80%;
   overflow-x: hidden;
 }
 .container{

@@ -20,7 +20,7 @@
                     <div class="d-flex">
                         <h3>{{ data.name }}</h3>
                         <v-spacer></v-spacer>
-                        <p class="my-auto mr-2">{{ data.time }}</p>
+                        <p class="my-auto mr-2 time">{{ data.time }}</p>
                     </div>
                     
                     <hr>
@@ -135,5 +135,8 @@ export default {
 .list{
     overflow-y: auto;
     overflow-x: hidden;
+}
+.time{
+    font-size: 10px;
 }
 </style>
