@@ -77,7 +77,7 @@ export default {
 
 <style scoped>
 .form{
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     right: 2.5px;
     width: 80%;

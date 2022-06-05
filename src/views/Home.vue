@@ -128,7 +128,7 @@ export default {
     position: relative;
 }
 .auditionBoad{
-  height: 750px;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }

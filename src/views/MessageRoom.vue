@@ -180,6 +180,7 @@ export default {
     width: 100%;
     padding: 10px 20px;
     background-color: white;
+    border: 3px solid black;
 }
 .img{
     margin-left: 20px;
@@ -197,7 +198,7 @@ export default {
     white-space: pre-line;
 }
 .cards{
-  height: 600px;
+  height: 530px;
   overflow-x: hidden;
 }
 .container{

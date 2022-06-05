@@ -20,8 +20,8 @@ export default {
 
 <style scoped>
 .postBtn{
-    position:absolute;
+    position:fixed;
     right: 10px;
-    bottom: 15%;
+    top: 70%;
 }
 </style>
