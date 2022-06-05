@@ -4,6 +4,7 @@
         v-model="drawer"
         app
         color="black"
+        v-if="loginFlag"
       >
         <div
           v-for="icon in icons"
@@ -12,7 +13,6 @@
           @click="formClose"
           class="my-8"
         >
-          
           <div class="d-flex pl-5">
             <v-btn text :to="icon.to">
               <v-icon large color="white">
@@ -20,9 +20,7 @@
               </v-icon>
               <h2 class="text">{{ icon.text }}</h2>
             </v-btn>
-
           </div>
-          <hr>
         </div>
       </v-navigation-drawer>
 
@@ -90,7 +88,7 @@ export default Vue.extend({
       }
       return false;
     }
-  }
+  },
 })
 </script>
 
