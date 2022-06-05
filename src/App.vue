@@ -27,9 +27,9 @@
       </v-navigation-drawer>
 
       <v-app-bar app color="black" >
-        <v-app-bar-nav-icon @click="drawer = !drawer" color="white"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click="clickMenu" color="white"></v-app-bar-nav-icon>
 
-        <v-toolbar-title class="title text-center" @click="goHome">ForActors</v-toolbar-title>
+        <v-toolbar-title class="title" @click="goHome">ForActors</v-toolbar-title>
         <v-btn
           text
           class="logout"
@@ -62,6 +62,11 @@ export default Vue.extend({
     }
   },
   methods:{
+    clickMenu(){
+      if(sessionStorage.getItem("user") != undefined){
+        this.drawer = !this.drawer;
+      }
+    },
     logout(){
       sessionStorage.removeItem("user");
       this.$router.push("/login")
@@ -95,7 +100,7 @@ export default Vue.extend({
 }
 .title{
   color: white;
-  margin: 0 auto;
+  margin-right: auto;
 }
 .text{
   color: white;
