@@ -8,13 +8,16 @@
                 prepend-inner-icon="mdi-account-search"
                 v-model="name"
                 :loading="loadFlag"
+                @keydown.enter="search"
             ></v-text-field>
         </div>
+
         <div>
             <v-card
                 v-for="(user, index) in showUsers"
                 :key="index"
                 @click="clickCard(index)"
+                class="mb-5"
             >
                 <v-row> 
                     <v-col cols=4 class="mt-1">
@@ -37,8 +40,8 @@
 <script>
 import db from "../plugins/firebase";
 import { getDocs, collection, query, where } from "firebase/firestore";
-
 export default {
+    
     data(){
         return{
             name:"",
@@ -48,6 +51,20 @@ export default {
     },
     watch:{
         name: async function(){
+            this.showUsers = [];
+        }
+    },
+    methods:{
+        clickCard(index){
+            sessionStorage.setItem("otherUser",this.showUsers[index].uid);
+            if(this.showUsers[index].uid == sessionStorage.getItem("user")){
+                this.$router.push("/profile");
+            }else{
+                this.$router.push("/othersProfile");
+            }
+        },
+        async search(){
+            this.loadFlag = true;
             this.showUsers = [];
             const collectionRef = collection(db, "users");
             const q = query(collectionRef, where("name", "==", this.name));
@@ -62,16 +79,6 @@ export default {
             .catch((err)=>{
                 console.log(err);
             });
-        }
-    },
-    methods:{
-        clickCard(index){
-            sessionStorage.setItem("otherUser",this.showUsers[index].uid);
-            if(this.showUsers[index].uid == sessionStorage.getItem("user")){
-                this.$router.push("/profile");
-            }else{
-                this.$router.push("/othersProfile");
-            }
         }
     }
 }

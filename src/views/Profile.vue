@@ -366,8 +366,8 @@ export default {
 }
 .imgInput{
     position: absolute;
-    top: 45%;
-    left: 47%;
+    top: 43%;
+    left: 48.5%;
 }
 .inputIcon{
     background-color: rgba(240, 248, 255, 0.748);
