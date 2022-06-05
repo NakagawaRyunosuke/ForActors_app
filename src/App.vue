@@ -61,9 +61,14 @@ export default Vue.extend({
   },
   methods:{
     clickMenu(){
-      if(sessionStorage.getItem("user") != undefined){
-        this.drawer = !this.drawer;
+      if(window.outerWidth < 1440){
+        if(sessionStorage.getItem("user") != undefined){
+          this.drawer = !this.drawer;
+        }
+      }else{
+        this.drawer = true;
       }
+
     },
     logout(){
       sessionStorage.removeItem("user");

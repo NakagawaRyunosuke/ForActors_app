@@ -173,15 +173,20 @@ export default {
 </script>
 
 <style scoped>
-
 .input{
     position: fixed;
     bottom: 0;
-    left: 0;
+    right: 0;
     width: 100%;
     padding: 10px 20px;
     background-color: white;
-    border: 3px solid black;
+}
+@media screen and (min-width: 1440px) {
+	.input{
+        width: 82.5%;
+        padding: 10px 20px;
+        background-color: white;
+    }
 }
 .img{
     margin-left: 20px;
