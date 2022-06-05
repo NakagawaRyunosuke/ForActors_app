@@ -1,24 +1,27 @@
-# actor_sns
-
-## Project setup
+# ForActors
+---
+## アプリへのリンク
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+[ForActors](https://victorious-cliff-038858200.1.azurestaticapps.net)
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 用いた技術
+*フロントエンド
+    *Vue.js
+    *Vuetify
+    *VueRouter
+    *VueStore
+    *VueLoading
 
-### Lints and fixes files
-```
-npm run lint
-```
+*バックエンド
+    *Firebase
+    *Firestore
+    *Authentication
+    *Azure Web Static App
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 主な機能
+
+
+### 改善点
+
+
