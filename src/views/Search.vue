@@ -4,7 +4,7 @@
             <v-text-field
                 solo
                 clearable
-                label="ユーザー名で検索"
+                label="ユーザー名を入力後、Enterで検索開始"
                 prepend-inner-icon="mdi-account-search"
                 v-model="name"
                 :loading="loadFlag"
