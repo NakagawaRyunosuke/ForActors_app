@@ -359,7 +359,7 @@ export default {
     border: 2px solid rgba(146, 142, 142, 0.729);
 }
 .container{
-    height: 750px;
+    height: 100%;
     width: 100%;
     margin-top: 2px;
     overflow: auto;
