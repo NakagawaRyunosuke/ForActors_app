@@ -3,7 +3,7 @@
         
         <v-row>
             <Backbtn :path="'/message'" class="pl-2 mr-auto my-3"/>
-            <v-btn text @click="refresh" class="pr-2ml-auto my-3"><v-icon>mdi-refresh</v-icon></v-btn>
+            <v-btn text @click="refresh" class="pr-2 ml-auto my-3"><v-icon>mdi-refresh</v-icon></v-btn>
         </v-row>
         <VueLoading v-show="loadFlag" type="spin" color="#333" :size="{ width: '100px', height: '100px' }"/>
         <div class="cards">

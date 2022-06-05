@@ -22,6 +22,6 @@ export default {
 .postBtn{
     position:absolute;
     right: 10px;
-    bottom: 20px;
+    bottom: 15%;
 }
 </style>

@@ -1,57 +1,48 @@
 <template>
   <v-app>
-    <v-card
-      flat
-      tile
-    >
-      <v-app-bar
-        elevation="6"
-        flat
+      <v-navigation-drawer
+        v-model="drawer"
+        app
         color="black"
       >
-        <h3 class="title">For Actors</h3>
+        <div
+          v-for="icon in icons"
+          :key="icon.key"
+          icon
+          @click="formClose"
+          class="my-8"
+        >
+          
+          <div class="d-flex pl-5">
+            <v-btn text :to="icon.to">
+              <v-icon large color="white">
+                {{ icon.name }}
+              </v-icon>
+              <h2 class="text">{{ icon.text }}</h2>
+            </v-btn>
+
+          </div>
+          <hr>
+        </div>
+      </v-navigation-drawer>
+
+      <v-app-bar app color="black" >
+        <v-app-bar-nav-icon @click="drawer = !drawer" color="white"></v-app-bar-nav-icon>
+
+        <v-toolbar-title class="title text-center" @click="goHome">ForActors</v-toolbar-title>
         <v-btn
           text
           class="logout"
           v-if="loginFlag"
           @click="logout"
           color="white"
-        >ログアウト<v-icon>mdi-logout</v-icon></v-btn>       
+        ><v-icon>mdi-logout</v-icon></v-btn>   
       </v-app-bar>
-    </v-card>
+    
 
     <v-main>
      <router-view/>
     </v-main>
-    
-    <v-footer
-      padless
-      class="footer"
-    >
-      <v-card
-        flat
-        tile
-        width="100%"
-        class="text-center"
-        elevation="20"
-        color="black"
-      >
-        <v-card-text v-if="loginFlag">
-          <v-btn
-            v-for="icon in icons"
-            :key="icon.key"
-            class="mx-5"
-            icon
-            :to="icon.to"
-            @click="formClose"
-          >
-            <v-icon size="auto" color="white">
-              {{ icon.name }}
-            </v-icon>
-          </v-btn>
-        </v-card-text>
-      </v-card>
-    </v-footer>
   </v-app>
 </template>
 
@@ -62,12 +53,12 @@ export default Vue.extend({
   data(){
     return{
       icons:[
-        {name:"mdi-home",to:"/",key:"1"},
-        {name:"mdi-magnify",to:"/search",key:"2"},
-        {name:"mdi-account",to:"/profile",key:"3"},
-        {name:"mdi-email",to:"/message",key:"4"},
+        {name:"mdi-home",to:"/",key:"1", text:"ホーム"},
+        {name:"mdi-magnify",to:"/search",key:"2", text:"検索"},
+        {name:"mdi-account",to:"/profile",key:"3", text:"プロフィール"},
+        {name:"mdi-email",to:"/message",key:"4", text:"メッセージ"},
       ],
-
+      drawer:null
     }
   },
   methods:{
@@ -78,6 +69,12 @@ export default Vue.extend({
     },
     formClose(){
       this.$store.state.postFlag = false;
+    },
+    goHome(){
+      if(this.$route.path != "/"){
+        this.$router.push("/");
+      }
+      
     }
   },
   computed:{
@@ -94,9 +91,13 @@ export default Vue.extend({
 
 <style scoped>
 .logout{
-  margin-left:35%;
+  margin-left: auto;
 }
 .title{
+  color: white;
+  margin: 0 auto;
+}
+.text{
   color: white;
 }
 </style>

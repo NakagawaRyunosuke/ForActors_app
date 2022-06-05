@@ -33,9 +33,11 @@
         <v-textarea class="mx-4" :value="item.text" readonly></v-textarea>
       </v-card>
     </div>
-    
+   
     <PostBtn/>
     <PostForm v-show="this.$store.state.postFlag" />
+    
+
   </v-container>
 </template>
 
@@ -123,9 +125,10 @@ export default {
     height: 100%;
     width: 100%;
     margin-top: 2px;
+    position: relative;
 }
 .auditionBoad{
-  height: 665px;
+  height: 750px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -138,6 +141,7 @@ export default {
 .alertWrapper{
   position: relative;
 }
+
 .alert{
   position: absolute;
   top:0;
