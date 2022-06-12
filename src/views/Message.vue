@@ -118,8 +118,9 @@ export default {
             .catch((err)=>{
                 console.log(err);
             });
-            this.loadFlag = false;
+            
         }
+        this.loadFlag = false;
     }
 }
 </script>
