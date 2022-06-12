@@ -79,12 +79,11 @@ export default {
         const auth = getAuth();
         getRedirectResult(auth)
         .then((result)=>{
-            console.log(result.user);
             this.$store.state.uid = result.user.uid;
             sessionStorage.setItem('user', this.$store.state.uid);
             this.checkData();
             this.$router.push("/");
-            this.$router.go({path: this.$router.currentRoute.path, force: true});
+            //this.$router.go({path: this.$router.currentRoute.path, force: true});
         })
         .catch((error)=>{
             const errorCode = error.code;
