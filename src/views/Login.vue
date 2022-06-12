@@ -76,7 +76,6 @@ export default {
         }
     },
     mounted(){
-        console.log("k")
         const auth = getAuth();
         getRedirectResult(auth)
         .then((result)=>{
