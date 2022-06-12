@@ -77,6 +77,7 @@ export default {
     },
     mounted(){
         if(this.loginFlag){
+            console.log("ok")
             const auth = getAuth();
             getRedirectResult(auth)
             .then((result)=>{
