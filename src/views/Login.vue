@@ -39,7 +39,7 @@
 <script>
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import db from "../plugins/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc,  } from "firebase/firestore";
 
 export default {
     methods:{
