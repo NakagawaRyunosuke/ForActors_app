@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import db from "../plugins/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -46,12 +46,13 @@ export default {
         googleAuth(){
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
-            signInWithPopup(auth,provider)
+            signInWithRedirect(auth,provider)
             .then((result)=>{
-                this.$store.state.uid = result.user.uid;
-                sessionStorage.setItem('user', this.$store.state.uid);
-                this.checkData();
-                this.$router.push("/");
+                console.log(result.user);
+                // this.$store.state.uid = result.user.uid;
+                // sessionStorage.setItem('user', this.$store.state.uid);
+                // this.checkData();
+                // this.$router.push("/");
                 //this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((error)=>{
