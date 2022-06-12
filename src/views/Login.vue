@@ -42,11 +42,17 @@ import db from "../plugins/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default {
+    data(){
+        return{
+            loginFlag:false
+        }
+    },
     methods:{
         googleAuth(){
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
+            this.loginFlag = true;
         },
         async checkData(){
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
@@ -70,21 +76,23 @@ export default {
         }
     },
     mounted(){
-        const auth = getAuth();
-        getRedirectResult(auth)
-        .then((result)=>{
-            console.log(result.user);
-            this.$store.state.uid = result.user.uid;
-            sessionStorage.setItem('user', this.$store.state.uid);
-            // this.checkData();
-            // this.$router.push("/");
-            //this.$router.go({path: this.$router.currentRoute.path, force: true});
-        })
-        .catch((error)=>{
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            alert(errorCode+" err: "+errorMessage);
-        })
+        if(this.loginFlag){
+            const auth = getAuth();
+            getRedirectResult(auth)
+            .then((result)=>{
+                console.log(result.user);
+                this.$store.state.uid = result.user.uid;
+                sessionStorage.setItem('user', this.$store.state.uid);
+                this.checkData();
+                this.$router.push("/");
+                this.$router.go({path: this.$router.currentRoute.path, force: true});
+            })
+            .catch((error)=>{
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorCode+" err: "+errorMessage);
+            })
+        }
     }
     
 
