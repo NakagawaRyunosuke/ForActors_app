@@ -58,7 +58,6 @@ export default {
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
-                console.log(res.data());
                 if(res.data() == undefined){
                     setDoc(docRef,{
                         uid: sessionStorage.getItem("user"),
@@ -69,6 +68,10 @@ export default {
                         follower:0
                     });
                 }
+            })
+            .then(()=>{
+                this.$router.push("/");
+                this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
             .catch((err)=>{
                 console.log(err);
@@ -82,8 +85,6 @@ export default {
             this.$store.state.uid = result.user.uid;
             sessionStorage.setItem('user', this.$store.state.uid);
             this.checkData();
-            this.$router.push("/");
-            //this.$router.go({path: this.$router.currentRoute.path, force: true});
         })
         .catch((error)=>{
             const errorCode = error.code;
