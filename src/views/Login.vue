@@ -49,8 +49,8 @@ export default {
             signInWithRedirect(auth,provider)
             .then((result)=>{
                 console.log(result.user);
-                // this.$store.state.uid = result.user.uid;
-                // sessionStorage.setItem('user', this.$store.state.uid);
+                this.$store.state.uid = result.user.uid;
+                sessionStorage.setItem('user', this.$store.state.uid);
                 // this.checkData();
                 // this.$router.push("/");
                 //this.$router.go({path: this.$router.currentRoute.path, force: true});
