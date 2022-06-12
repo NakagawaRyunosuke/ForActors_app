@@ -65,21 +65,19 @@ export default {
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
-                console.log(res.data());
                 if(res.data() == undefined){
-                    await setDoc(docRef,{
+                    setDoc(docRef,{
                         uid: sessionStorage.getItem("user"),
-                        name:"名無し",
+                        name:"プロフィールを設定してください",
                         src:"",
                         PRText:"",
                         follow:0,
                         follower:0
-                    })
+                    });
                 }
             })
             .catch((err)=>{
                 console.log(err);
-
             });
         }
     },
