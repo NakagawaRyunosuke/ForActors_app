@@ -63,17 +63,23 @@ export default {
         },
         async checkData(){
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
-            const data = await getDoc(docRef);
-            if(data.data() == undefined){
-                await setDoc(docRef,{
-                    uid: sessionStorage.getItem("user"),
-                    name:"名無し",
-                    src:"",
-                    PRText:"",
-                    follow:0,
-                    follower:0
-                });
-            }
+            await getDoc(docRef)
+            .then((res)=>{
+                console.log(res.data());
+            })
+            .catch((err)=>{
+                console.log(err);
+            });
+            // //if(data.data() == undefined){
+            //     await setDoc(docRef,{
+            //         uid: sessionStorage.getItem("user"),
+            //         name:"名無し",
+            //         src:"",
+            //         PRText:"",
+            //         follow:0,
+            //         follower:0
+            //     });
+            // }
         }
     },
     
