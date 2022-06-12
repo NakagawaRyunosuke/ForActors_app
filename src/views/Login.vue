@@ -48,7 +48,6 @@ export default {
             const auth = getAuth();
             signInWithPopup(auth,provider)
             .then((result)=>{
-                console.log(result)
                 this.$store.state.uid = result.user.uid;
                 sessionStorage.setItem('user', this.$store.state.uid);
                 this.checkData();
@@ -65,6 +64,7 @@ export default {
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
+                console.log(res.data());
                 if(res.data() == undefined){
                     setDoc(docRef,{
                         uid: sessionStorage.getItem("user"),
