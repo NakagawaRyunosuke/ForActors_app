@@ -58,6 +58,7 @@ export default {
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
+                console.log("o")
                 if(res.data() == undefined){
                     setDoc(docRef,{
                         uid: sessionStorage.getItem("user"),
@@ -70,6 +71,7 @@ export default {
                 }
             })
             .then(()=>{
+                console.log("k")
                 this.$router.push("/");
                 this.$router.go({path: this.$router.currentRoute.path, force: true});
             })
