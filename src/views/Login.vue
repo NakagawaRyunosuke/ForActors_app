@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getAuth, GoogleAuthProvider, getRedirectResult } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import db from "../plugins/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -46,7 +46,7 @@ export default {
         googleAuth(){
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
-            getRedirectResult(auth,provider)
+            signInWithRedirect(auth,provider)
             .then((result)=>{
                 console.log(result.user);
                 this.$store.state.uid = result.user.uid;
@@ -60,6 +60,7 @@ export default {
                 const errorMessage = error.message;
                 alert(errorCode+" err: "+errorMessage);
             })
+            console.log(this.$store.state.uid)
         },
         async checkData(){
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
