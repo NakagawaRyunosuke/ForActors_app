@@ -12,6 +12,7 @@
                         color="white"
                         width="50%"
                         class="mb-4 mt-5"
+                        :disabled="btnFlag"
                         @click="googleAuth"
                     >Google</v-btn>
                     <p></p>
@@ -20,6 +21,7 @@
                         width="50%"
                         class="mb-4"
                         to="/emailForm"
+                        :disabled="btnFlag"
                     >E-mail</v-btn>
                 </div>
                 <h2>or</h2>
@@ -28,6 +30,7 @@
                         width="50%"
                         class="mb-8 mt-5"
                         to="/addAccount"
+                        :disabled="btnFlag"
                     >メールで新規登録</v-btn>
             </v-card-text>
             
@@ -44,7 +47,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 export default {
     data(){
         return{
-            data:undefined
+            data:null,
+            btnFlag:false
         }
     },
     methods:{
@@ -58,7 +62,6 @@ export default {
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
-                console.log("o")
                 this.data = res.data();
             })
             .catch((err)=>{
@@ -75,14 +78,16 @@ export default {
                     follower:0
                 })
                 .then(()=>{
-                    console.log("k")
+                    this.btnFlag = false;
                     this.$router.push("/");
                     this.$router.go({path: this.$router.currentRoute.path, force: true});
                 })
                 .catch((err)=>{
                     console.log(err);
+                    alert("ページを閉じてもう一度操作を行なってください");
                 });
             }else{
+                this.btnFlag = false;
                 this.$router.push("/");
                 this.$router.go({path: this.$router.currentRoute.path, force: true});
             }
@@ -92,6 +97,7 @@ export default {
         const auth = getAuth();
         getRedirectResult(auth)
         .then((result)=>{
+            this.btnFlag = true;
             this.$store.state.uid = result.user.uid;
             sessionStorage.setItem('user', this.$store.state.uid);
             this.checkData();
