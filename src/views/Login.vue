@@ -39,7 +39,7 @@
 <script>
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import db from "../plugins/firebase";
-import { doc, getDoc,  } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 export default {
     methods:{
@@ -66,20 +66,21 @@ export default {
             await getDoc(docRef)
             .then((res)=>{
                 console.log(res.data());
+                if(res.data() == undefined){
+                    await setDoc(docRef,{
+                        uid: sessionStorage.getItem("user"),
+                        name:"名無し",
+                        src:"",
+                        PRText:"",
+                        follow:0,
+                        follower:0
+                    })
+                }
             })
             .catch((err)=>{
                 console.log(err);
+
             });
-            // //if(data.data() == undefined){
-            //     await setDoc(docRef,{
-            //         uid: sessionStorage.getItem("user"),
-            //         name:"名無し",
-            //         src:"",
-            //         PRText:"",
-            //         follow:0,
-            //         follower:0
-            //     });
-            // }
         }
     },
     
