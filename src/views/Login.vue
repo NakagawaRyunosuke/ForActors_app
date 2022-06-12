@@ -59,6 +59,7 @@ export default {
             
         },
         async checkData(){
+            this.btnFlag = true;
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
@@ -97,7 +98,6 @@ export default {
         const auth = getAuth();
         getRedirectResult(auth)
         .then((result)=>{
-            this.btnFlag = true;
             this.$store.state.uid = result.user.uid;
             sessionStorage.setItem('user', this.$store.state.uid);
             this.checkData();
