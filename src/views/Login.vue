@@ -53,13 +53,12 @@ export default {
     },
     methods:{
         googleAuth(){
-            this.btnFlag = true;
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
-            
         },
         async checkData(){
+            this.btnFlag = true;
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
