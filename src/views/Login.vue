@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import db from "../plugins/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -46,7 +46,8 @@ export default {
         googleAuth(){
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
-            signInWithRedirect(auth,provider)
+            signInWithRedirect(auth,provider);
+            getRedirectResult(auth)
             .then((result)=>{
                 console.log(result.user);
                 this.$store.state.uid = result.user.uid;
