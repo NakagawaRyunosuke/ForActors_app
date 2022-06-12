@@ -44,7 +44,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 export default {
     data(){
         return{
-            loginFlag:false
+            data:undefined
         }
     },
     methods:{
@@ -52,32 +52,40 @@ export default {
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
-            this.loginFlag = true;
+            
         },
         async checkData(){
             const docRef = doc(db, "users", sessionStorage.getItem("user"));
             await getDoc(docRef)
             .then((res)=>{
                 console.log("o")
-                if(res.data() == undefined){
-                    setDoc(docRef,{
-                        uid: sessionStorage.getItem("user"),
-                        name:"プロフィールを設定してください",
-                        src:"",
-                        PRText:"",
-                        follow:0,
-                        follower:0
-                    });
-                }
-            })
-            .then(()=>{
-                console.log("k")
-                this.$router.push("/");
-                this.$router.go({path: this.$router.currentRoute.path, force: true});
+                this.data = res.data();
             })
             .catch((err)=>{
                 console.log(err);
             });
+
+            if(this.data == undefined){
+                await setDoc(docRef,{
+                    uid: sessionStorage.getItem("user"),
+                    name:"プロフィールを設定してください",
+                    src:"",
+                    PRText:"",
+                    follow:0,
+                    follower:0
+                })
+                .then(()=>{
+                    console.log("k")
+                    this.$router.push("/");
+                    this.$router.go({path: this.$router.currentRoute.path, force: true});
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+            }else{
+                this.$router.push("/");
+                this.$router.go({path: this.$router.currentRoute.path, force: true});
+            }
         }
     },
     mounted(){
