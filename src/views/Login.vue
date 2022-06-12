@@ -97,9 +97,9 @@ export default {
         const auth = getAuth();
         getRedirectResult(auth)
         .then((result)=>{
-            this.btnFlag = true;
             this.$store.state.uid = result.user.uid;
             sessionStorage.setItem('user', this.$store.state.uid);
+            this.btnFlag = true;
             this.checkData();
         })
         .catch((error)=>{
