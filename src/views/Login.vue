@@ -56,7 +56,7 @@ export default {
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
-            sessionStorage.setItem("loginFlag",true);
+            sessionStorage.setItem("loginFlag","login");
         },
         async checkData(){
             this.btnFlag = true;
@@ -95,7 +95,7 @@ export default {
         }
     },
     mounted(){
-        if(sessionStorage.getItem("loginFlag")){
+        if(sessionStorage.getItem("loginFlag") == "login"){
             const auth = getAuth();
             getRedirectResult(auth)
             .then((result)=>{
