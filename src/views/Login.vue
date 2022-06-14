@@ -56,6 +56,7 @@ export default {
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
+            sessionStorage.setItem("loginFlag",true);
         },
         async checkData(){
             this.btnFlag = true;
@@ -94,20 +95,20 @@ export default {
         }
     },
     mounted(){
-        const auth = getAuth();
-        getRedirectResult(auth)
-        .then((result)=>{
-            this.$store.state.uid = result.user.uid;
-            sessionStorage.setItem('user', this.$store.state.uid);
-            this.btnFlag = true;
-            this.checkData();
-        })
-        .catch((error)=>{
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode+" err: "+errorMessage);
-        })
-    
+        if(sessionStorage.getItem("loginFlag")){
+            const auth = getAuth();
+            getRedirectResult(auth)
+            .then((result)=>{
+                this.$store.state.uid = result.user.uid;
+                sessionStorage.setItem('user', this.$store.state.uid);
+                this.checkData();
+            })
+            .catch((error)=>{
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode+" err: "+errorMessage);
+            })
+        }
     }
     
 

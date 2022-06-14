@@ -72,6 +72,7 @@ export default Vue.extend({
     },
     logout(){
       sessionStorage.removeItem("user");
+      sessionStorage.removeItem("loginFlag");
       this.$router.push("/login")
       this.$router.go({path: this.$router.currentRoute.path, force: true});
     },
