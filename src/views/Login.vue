@@ -53,10 +53,10 @@ export default {
     },
     methods:{
         googleAuth(){
+            sessionStorage.setItem("loginFlag","login");
             const provider = new GoogleAuthProvider();
             const auth = getAuth();
             signInWithRedirect(auth,provider);
-            sessionStorage.setItem("loginFlag","login");
         },
         async checkData(){
             this.btnFlag = true;
