@@ -12,8 +12,9 @@
                         color="white"
                         width="50%"
                         class="mb-4 mt-5"
-                        :disabled="btnFlag"
+                        :loading="btnFlag"
                         @click="googleAuth"
+                        :disabled="btnFlag"
                     >Google</v-btn>
                     <p></p>
                     <v-btn
@@ -21,6 +22,7 @@
                         width="50%"
                         class="mb-4"
                         to="/emailForm"
+                        :loading="btnFlag"
                         :disabled="btnFlag"
                     >E-mail</v-btn>
                 </div>
@@ -30,6 +32,7 @@
                         width="50%"
                         class="mb-8 mt-5"
                         to="/addAccount"
+                        :loading="btnFlag"
                         :disabled="btnFlag"
                     >メールで新規登録</v-btn>
             </v-card-text>
