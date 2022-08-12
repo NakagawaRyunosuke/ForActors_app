@@ -19,7 +19,6 @@
                 <v-btn
                     class="mb-6 mt-6"
                     width="30%"
-                    color="deep-orange lighten-3"
                     @click="addUser"
                 >登録</v-btn>
             </v-card-text>
