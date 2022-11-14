@@ -1,7 +1,7 @@
 # ForActors
 ---
 ## アプリへのリンク
-[ForActors](https://victorious-cliff-038858200.1.azurestaticapps.net)
+~~[ForActors](https://victorious-cliff-038858200.1.azurestaticapps.net)~~　Azureのサービス切れで現在接続不可能（;_;)
 
 
 ### 用いた技術
